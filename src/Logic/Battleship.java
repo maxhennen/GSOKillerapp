@@ -26,6 +26,8 @@ public class Battleship extends UnicastRemoteObject implements IUserListener
         this.rmiClient = rmiClient;
     }
 
+    public User getUser(){return user;}
+
     public void stopSession(User user){
 
     }
@@ -78,6 +80,7 @@ public class Battleship extends UnicastRemoteObject implements IUserListener
     public void startGame(User playerOne, User playerTwo){
 
     }
+
 
     public String MD5Hash(String hash){
         try {

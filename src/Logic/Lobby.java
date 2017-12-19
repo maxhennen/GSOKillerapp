@@ -1,16 +1,27 @@
 package Logic;
 
+import Client.RMIClient;
 import Interfaces.IServerReference;
 import Interfaces.IUserPublisher;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by maxhe on 13-12-2017.
  */
-public class Lobby implements IUserPublisher, IServerReference
+public class Lobby extends UnicastRemoteObject implements IUserPublisher, IServerReference
 {
+    private ArrayList<User> users;
+
+    public Lobby() throws RemoteException{
+        users = new ArrayList<>();
+    }
+
+
     /**
      * Register property. Register property at this publisher. From now on
      * listeners can subscribe to this property. Nothing changes in case given
@@ -88,8 +99,15 @@ public class Lobby implements IUserPublisher, IServerReference
     }
 
     @Override
-    public void addPlayer(User player)
+    public boolean connect(User user) throws RemoteException
     {
-
+        try
+        {
+            users.add(user);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
     }
 }

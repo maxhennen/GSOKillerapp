@@ -1,11 +1,15 @@
 package Interfaces;
 
+import Client.RMIClient;
 import Logic.User;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * Created by maxhe on 13-12-2017.
  */
-public interface IServerReference
+public interface IServerReference extends Remote
 {
-    void addPlayer(User player);
+    boolean connect(User user) throws RemoteException;
 }

@@ -17,10 +17,12 @@ public class DatabaseRepository extends UnicastRemoteObject implements IData
 {
     //private static final long serialVersionUID = 1L;
     private IDatabaseReference context;
+    private CentraleRMIServer server;
 
-    public DatabaseRepository(IDatabaseReference context) throws RemoteException
+    public DatabaseRepository(IDatabaseReference context, CentraleRMIServer server) throws RemoteException
     {
         this.context = context;
+        this.server = server;
     }
 
     @Override
@@ -33,5 +35,11 @@ public class DatabaseRepository extends UnicastRemoteObject implements IData
     public User login(String email, String password)throws RemoteException
     {
         return context.login(email,password);
+    }
+
+    @Override
+    public boolean connectWithGameserver(User user) throws RemoteException
+    {
+        return server.connectWithGameserver(user);
     }
 }

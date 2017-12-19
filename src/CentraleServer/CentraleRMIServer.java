@@ -5,10 +5,16 @@
 package CentraleServer;
 
 import Interfaces.IData;
+import Interfaces.IServerReference;
+import Logic.Battleship;
+import Logic.Lobby;
+import Logic.User;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -24,16 +30,21 @@ public class CentraleRMIServer extends Application{
     private static final int portNumber = 1099;
 
     // Set binding name for student administration
-    private static final String bindingName = "Data";
+    private static final String bindingName = "data";
 
     // References to registry and student administration
     private Registry registry = null;
-    private DatabaseRepository beurs = null;
+    private DatabaseRepository data = null;
+
+    //RMIGameserver
+    private static final String bindingNameGameserver = "reference";
+    private Registry registryGameserver = null;
+    private IServerReference lobby = null;
 
     // Constructor
     public CentraleRMIServer() throws RemoteException {
 
-        beurs = new DatabaseRepository(new DatabasePersistentie());
+        data = new DatabaseRepository(new DatabasePersistentie(), this);
 
         // Create registry at port number
         try {
@@ -48,12 +59,42 @@ public class CentraleRMIServer extends Application{
 
         // Bind beurs using registry
         try {
-            registry.rebind(bindingName, (IData) beurs);
+            registry.rebind(bindingName, (IData) data);
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot bind data");
             System.out.println("Server: RemoteException: " + ex.getMessage());
         }
         printIPAddresses();
+
+        //Rebind with gameserver
+
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            int portNr = 1100;
+
+            registryGameserver = LocateRegistry.getRegistry(ip.getHostAddress(), portNr);
+        }
+        catch (RemoteException ex) {
+            System.out.println("Server: Can't find registry " + ex.getMessage());
+            registryGameserver = null;
+        }
+        catch (UnknownHostException e){
+            System.out.println("Server: Can't find host");
+            System.out.println("Server: UnKnownHostException: " + e.getMessage());
+        }
+
+        if (registry != null){
+            try{
+                lobby = (IServerReference) registryGameserver.lookup(bindingNameGameserver);
+                System.out.println("Server: lookup");
+            }
+            catch (RemoteException ex){
+                System.out.println("Server: RemoteException: " + ex.getMessage());
+            }
+            catch (NotBoundException ex){
+                System.out.println("Server: No beurs binded to registry." + ex.getMessage());
+            }
+        }
     }
 
     @Override
@@ -84,6 +125,19 @@ public class CentraleRMIServer extends Application{
         {
             System.out.println("Server: Cannot get IP address of local host");
             System.out.println("Server: UnknownHostException: " + ex.getMessage());
+        }
+    }
+
+    public boolean connectWithGameserver(User user){
+        try
+        {
+            System.out.println(user.getUsername());
+            return lobby.connect(user);
+        }
+        catch (RemoteException e){
+            System.out.println("Server: Cann't connect with gameserver");
+            System.out.println("Server: RemoteException: " + e.getMessage());
+            return false;
         }
     }
 }

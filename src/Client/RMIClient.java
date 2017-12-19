@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -35,22 +36,36 @@ import java.util.Properties;
  */
 public class RMIClient extends Application
 {
+    private Stage stage;
 
-    public static final int WIDTH = 1000;
-    public static final int HEIGHT = 300;
+    //Panes
+    private AnchorPane loginScreen;
+    private AnchorPane chooseModeScreen;
+    private AnchorPane lobbyScreen;
 
-    private AnchorPane anchorPane;
+    //Scenes
+    private Scene loginScene;
+    private Scene chooseModeScene;
+    private Scene lobbyScene;
+
+    // Nodes loginscreen
     private TextField tfLoginName;
     private PasswordField tfLoginPassword;
     private Button btnLogin;
-
     private TextField tfRegisterName;
     private TextField tfRegisterEmail;
     private PasswordField tfRegisterPassword;
     private PasswordField tfRegisterConfirm;
     private Button btnRegister;
 
-    private static final String bindingName = "Data";
+    //Nodes chooosemodescreen
+    private Button btnnormalModus;
+    private Button btnbigModus;
+    private Button btnsmallModus;
+    private Label lblChooseModus;
+
+    //RMICentraleServer
+    private static final String bindingNameCentraleserver = "data";
 
     private Registry registry = null;
     private IData data = null;
@@ -70,7 +85,7 @@ public class RMIClient extends Application
 
         if (registry != null){
             try{
-                data = (IData) registry.lookup(bindingName);
+                data = (IData) registry.lookup(bindingNameCentraleserver);
                 System.out.println("Client: lookup");
                 battleship = new Battleship(this);
             }
@@ -92,29 +107,35 @@ public class RMIClient extends Application
         System.out.println("CLIENT USING REGISTRY");
 
         // Create client
-        CreateRMIClient(getConnectionProperties());
+        CreateRMIClient(getProperties());
 
-        setScene();
-        Scene scene = new Scene(anchorPane, WIDTH, HEIGHT);
+        stage = primaryStage;
+
+        //initialize screens
+        loginScreen = new AnchorPane();
+        chooseModeScreen = new AnchorPane();
+        lobbyScreen = new AnchorPane();
+
+        setupControls();
+
+        loginScene = new Scene(loginScreen, 1000, 300);
+        chooseModeScene = new Scene(chooseModeScreen,1000,300);
+        lobbyScene = new Scene(lobbyScreen,1000,300);
 
         primaryStage.setTitle("Battleship");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(loginScene);
         primaryStage.show();
         primaryStage.toFront();
     }
 
-    private void setScene(){
-        anchorPane = new AnchorPane();
-        anchorPane.setPrefWidth(WIDTH);
-        anchorPane.setPrefHeight(HEIGHT);
-
+    private void setupControls(){
+        // set loginscreen
         tfLoginName = new TextField();
         tfLoginName.setLayoutX(50);
         tfLoginName.setLayoutY(50);
         tfLoginName.setPrefHeight(27);
         tfLoginName.setPrefWidth(200);
         tfLoginName.setPromptText("Email");
-        anchorPane.getChildren().add(tfLoginName);
 
         tfLoginPassword = new PasswordField();
         tfLoginPassword.setLayoutY(90);
@@ -122,7 +143,6 @@ public class RMIClient extends Application
         tfLoginPassword.setPrefWidth(200);
         tfLoginPassword.setPrefHeight(27);
         tfLoginPassword.setPromptText("Password");
-        anchorPane.getChildren().add(tfLoginPassword);
 
         btnLogin = new Button();
         btnLogin.setLayoutX(50);
@@ -130,22 +150,7 @@ public class RMIClient extends Application
         btnLogin.setPrefWidth(200);
         btnLogin.setPrefHeight(27);
         btnLogin.setText("Login");
-        btnLogin.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                try
-                {
-                    battleship.login(tfLoginName.getText(), tfLoginPassword.getText());
-                } catch (ConnectionException e)
-                {
-                    System.out.println("Client: ConnectionException: " + e.getMessage());
-                    JOptionPane.showMessageDialog(null,"Connection lost with server!");
-                }
-            }
-        });
-        anchorPane.getChildren().add(btnLogin);
+        btnLogin.setOnAction(event -> login());
 
         tfRegisterName = new TextField();
         tfRegisterName.setLayoutX(500);
@@ -153,7 +158,6 @@ public class RMIClient extends Application
         tfRegisterName.setPrefWidth(200);
         tfRegisterName.setPrefHeight(27);
         tfRegisterName.setPromptText("Username");
-        anchorPane.getChildren().add(tfRegisterName);
 
         tfRegisterEmail = new TextField();
         tfRegisterEmail.setLayoutX(500);
@@ -161,7 +165,6 @@ public class RMIClient extends Application
         tfRegisterEmail.setPrefWidth(200);
         tfRegisterEmail.setPrefHeight(27);
         tfRegisterEmail.setPromptText("Email");
-        anchorPane.getChildren().add(tfRegisterEmail);
 
         tfRegisterPassword = new PasswordField();
         tfRegisterPassword.setLayoutY(130);
@@ -169,7 +172,6 @@ public class RMIClient extends Application
         tfRegisterPassword.setPrefHeight(27);
         tfRegisterPassword.setPrefWidth(200);
         tfRegisterPassword.setPromptText("Password");
-        anchorPane.getChildren().add(tfRegisterPassword);
 
         tfRegisterConfirm = new PasswordField();
         tfRegisterConfirm.setLayoutX(500);
@@ -177,7 +179,6 @@ public class RMIClient extends Application
         tfRegisterConfirm.setPrefWidth(200);
         tfRegisterConfirm.setPrefHeight(27);
         tfRegisterConfirm.setPromptText("Password Confirmation");
-        anchorPane.getChildren().add(tfRegisterConfirm);
 
         btnRegister = new Button();
         btnRegister.setLayoutX(500);
@@ -185,26 +186,84 @@ public class RMIClient extends Application
         btnRegister.setPrefWidth(100);
         btnRegister.setPrefHeight(27);
         btnRegister.setText("Register");
-        btnRegister.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent event)
-            {
-                try
-                {
-                    battleship.register(tfRegisterName.getText(),tfRegisterEmail.getText(),tfRegisterPassword.getText(),tfRegisterConfirm.getText());
-                } catch (ConnectionException e)
-                {
-                    System.out.println("Client: ConnectionException: " + e.getMessage());
-                    JOptionPane.showMessageDialog(null,"Connection lost with server!");
-                }
-            }
-        });
-        anchorPane.getChildren().add(btnRegister);
+        btnRegister.setOnAction(event -> register());
+
+        loginScreen.getChildren().addAll(tfLoginName, tfLoginPassword, btnLogin, tfRegisterName, tfRegisterEmail, tfRegisterPassword, tfRegisterConfirm, btnRegister);
+        //end set loginscreen
+
+        // set choosemodescreen
+        btnsmallModus = new Button();
+        btnsmallModus.setLayoutY(128);
+        btnsmallModus.setLayoutX(75);
+        btnsmallModus.setPrefHeight(115);
+        btnsmallModus.setPrefWidth(108);
+        btnsmallModus.setText("Small\n 8x8");
+
+        btnnormalModus = new Button();
+        btnnormalModus.setLayoutY(128);
+        btnnormalModus.setLayoutX(225);
+        btnnormalModus.setPrefWidth(108);
+        btnnormalModus.setPrefHeight(115);
+        btnnormalModus.setText("Normal\n 10x10");
+        btnnormalModus.setOnAction(event -> connectWithGameServer());
+
+        btnbigModus = new Button();
+        btnbigModus.setLayoutY(128);
+        btnbigModus.setLayoutX(375);
+        btnbigModus.setPrefHeight(115);
+        btnbigModus.setPrefWidth(108);
+        btnbigModus.setText("Big\n12x12");
+
+        lblChooseModus = new Label();
+        lblChooseModus.setLayoutY(51);
+        lblChooseModus.setLayoutX(75);
+        lblChooseModus.setPrefHeight(57);
+        lblChooseModus.setPrefWidth(259);
+        lblChooseModus.setText("Choose gamemodus");
+        lblChooseModus.setStyle("-fx-font-size: 28");
+
+        chooseModeScreen.getChildren().addAll(btnsmallModus,btnnormalModus,btnbigModus, lblChooseModus);
+        //end set choosemodusscreen
     }
 
+    private void login(){
+        try
+        {
+            battleship.login(tfLoginName.getText(), tfLoginPassword.getText());
+            if(battleship.getUser() != null){
+                stage.setTitle("Choose gamemodus");
+                stage.setScene(chooseModeScene);
+            }
+        } catch (ConnectionException e)
+        {
+            System.out.println("Client: ConnectionException: " + e.getMessage());
+            JOptionPane.showMessageDialog(null,"Connection lost with server!");
+        }
+    }
 
-    public static Properties getConnectionProperties()
+    private void register(){
+        try
+        {
+            battleship.register(tfRegisterName.getText(),tfRegisterEmail.getText(),tfRegisterPassword.getText(),tfRegisterConfirm.getText());
+        } catch (ConnectionException e)
+        {
+            System.out.println("Client: ConnectionException: " + e.getMessage());
+            JOptionPane.showMessageDialog(null,"Connection lost with server!");
+        }
+    }
+
+    private void connectWithGameServer(){
+        try
+        {
+            System.out.println(battleship.getUser().getUsername());
+            data.connectWithGameserver(battleship.getUser());
+        }
+        catch (RemoteException e){
+            System.out.println("Client: RemoteException: " + e.getMessage());
+        }
+    }
+
+    public static Properties getProperties()
     {
         Properties properties = new Properties();
 
