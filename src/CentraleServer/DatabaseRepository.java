@@ -38,8 +38,8 @@ public class DatabaseRepository extends UnicastRemoteObject implements IData
     }
 
     @Override
-    public boolean connectWithGameserver(User user) throws RemoteException
+    public void connectWithGameserver(User user) throws RemoteException
     {
-        return server.connectWithGameserver(user);
+        server.connectWithGameserver(user);
     }
 }

@@ -5,6 +5,7 @@
  */
 package fontyspublisher;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * 
  * @author Frank Peeters, Nico Kuijpers
  */
-public class RemotePublisher extends UnicastRemoteObject 
+public class RemotePublisher extends UnicastRemoteObject
     implements IRemotePublisherForListener, IRemotePublisherForDomain {
 
     // Local publisher

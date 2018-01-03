@@ -1,10 +1,13 @@
 package Logic;
 
-import Client.RMIClient;
+import GameServer.RMIGameClient;
+import Interfaces.ILobby;
 import Interfaces.IServerReference;
-import Interfaces.IUserPublisher;
-import com.sun.org.apache.regexp.internal.RE;
+import fontyspublisher.RemotePublisher;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -13,73 +16,15 @@ import java.util.List;
 /**
  * Created by maxhe on 13-12-2017.
  */
-public class Lobby extends UnicastRemoteObject implements IUserPublisher, IServerReference
+public class Lobby extends UnicastRemoteObject implements IServerReference, ILobby, Serializable
 {
-    private ArrayList<User> users;
+    private List<User> users;
+    private RemotePublisher publisher = null;
 
-    public Lobby() throws RemoteException{
+    public Lobby(RemotePublisher publisher) throws RemoteException{
         users = new ArrayList<>();
-    }
-
-
-    /**
-     * Register property. Register property at this publisher. From now on
-     * listeners can subscribe to this property. Nothing changes in case given
-     * property was already registered.
-     *
-     * @param property empty string not allowed
-     * @throws RemoteException
-     */
-    @Override
-    public void registerProperty(String property) throws RemoteException
-    {
-
-    }
-
-    /**
-     * Unregister property. Unregister property at this publisher. From now on
-     * listeners subscribed to this property will not be informed on changes.
-     * In case given property is null-String, all properties (except null) will
-     * be unregistered.
-     *
-     * @param property registered property at this publisher
-     * @throws RemoteException
-     */
-    @Override
-    public void unregisterProperty(String property) throws RemoteException
-    {
-
-    }
-
-    /**
-     * Inform all listeners subscribed to property. All listeners subscribed
-     * to given property as well as all listeners subscribed to null-String
-     * are informed of a change of given property through a (remote) method
-     * invocation of propertyChange(). In case given property is the null-String
-     * all subscribed listeners are informed.
-     *
-     * @param property property is either null-String or is registered
-     * @param oldValue original value of property at domain (null is allowed)
-     * @param newValue new value of property at domain
-     * @throws RemoteException
-     */
-    @Override
-    public void inform(String property, Object oldValue, Object newValue) throws RemoteException
-    {
-
-    }
-
-    /**
-     * Obtain all registered properties. An unmodifiable list all properties
-     * including the null property is returned.
-     *
-     * @return list of registered properties including null
-     * @throws RemoteException
-     */
-    @Override
-    public List<String> getProperties() throws RemoteException
-    {
-        return null;
+        this.publisher = publisher;
+        publisher.registerProperty("lobby");
     }
 
     public void sendInvitation(){
@@ -99,15 +44,26 @@ public class Lobby extends UnicastRemoteObject implements IUserPublisher, IServe
     }
 
     @Override
-    public boolean connect(User user) throws RemoteException
+    public void connectWithGameserver(User user) throws RemoteException
     {
         try
         {
             users.add(user);
-            return true;
+            publisher.inform("lobby",null,users);
+            System.out.println("user added");
         }
-        catch (Exception e){
-            return false;
+        catch (RemoteException e){
+            System.out.println("GameClient: RemoteException: " + e.getMessage());
         }
     }
+
+    /**
+     * Gets a list of all players in this lobby
+     * @return a list of users containing individual players
+     */
+    public ObservableList<User> getPlayers() throws RemoteException
+    {
+        return FXCollections.unmodifiableObservableList(FXCollections.observableList(users));
+    }
+
 }

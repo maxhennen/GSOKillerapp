@@ -128,16 +128,14 @@ public class CentraleRMIServer extends Application{
         }
     }
 
-    public boolean connectWithGameserver(User user){
+    public void connectWithGameserver(User user){
         try
         {
-            System.out.println(user.getUsername());
-            return lobby.connect(user);
+            lobby.connectWithGameserver(user);
         }
         catch (RemoteException e){
             System.out.println("Server: Cann't connect with gameserver");
             System.out.println("Server: RemoteException: " + e.getMessage());
-            return false;
         }
     }
 }

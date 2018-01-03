@@ -10,6 +10,8 @@ import Interfaces.IData;
 import Interfaces.IServerReference;
 import Logic.Lobby;
 import com.sun.jmx.remote.internal.RMIExporter;
+import fontyspublisher.IRemotePublisherForDomain;
+import fontyspublisher.Publisher;
 import fontyspublisher.RemotePublisher;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -27,39 +29,84 @@ import java.rmi.registry.Registry;
 public class GameRMIServerNormal extends Application{
 
     // Set port number
-    private static final int portNumber = 1100;
+    private static final int portNumberReference = 1100;
+    private static final int portNumberLobby = 1101;
 
-    // Set binding name for student administration
-    private static final String bindingName = "reference";
+    // Set binding name for reference with central server
+    private static final String bindingNameReference = "reference";
 
-    // References to registry and student administration
-    private Registry registry = null;
+    // References to registry and central server
+    private Registry registryReference = null;
     private Lobby lobby = null;
+
+    //Reference to registry and game client
+    private Registry registryLobby = null;
+    private static final String bindingNameLobby = "lobby";
+    private static final String bindingNamePublisher = "RemotePublisher";
     private RemotePublisher publisher = null;
 
     // Constructor
     public GameRMIServerNormal() throws RemoteException {
 
-        lobby = new Lobby();
+        try
+        {
+            publisher = new RemotePublisher();
+            lobby = new Lobby(publisher);
+            System.out.println("lobby created");
+            publisher.registerProperty("lobby");
+        } catch (RemoteException e)
+        {
+            System.out.println("GameServer: Cannot create lobby");
+            System.out.println("GameServer: RemoteException " + e.getMessage());
+        }
 
         // Create registry at port number
         try {
-            registry = LocateRegistry.createRegistry(portNumber);
-            System.out.println("Server: Registry created on port number " + portNumber);
+            registryReference = LocateRegistry.createRegistry(portNumberReference);
+            System.out.println("Server: Registry created on port number " + portNumberReference);
             System.out.println();
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot create registry");
             System.out.println("Server: RemoteException: " + ex.getMessage());
-            registry = null;
+            registryReference = null;
         }
 
         // Bind beurs using registry
         try {
-            registry.rebind(bindingName, (IServerReference) lobby);
+            registryReference.rebind(bindingNameReference, (IServerReference) lobby);
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot bind data");
             System.out.println("Server: RemoteException: " + ex.getMessage());
         }
+
+        try
+        {
+            registryLobby = LocateRegistry.createRegistry(portNumberLobby);
+            System.out.println("GameServer: Registry created on portnumber " + portNumberLobby);
+        }
+        catch (RemoteException e){
+            System.out.println("GameServer: Cannot create registry");
+            System.out.println("GameServer: RemoteException: " + e.getMessage());
+        }
+
+        try
+        {
+            registryLobby.rebind(bindingNamePublisher,publisher);
+        }
+        catch (RemoteException e){
+            System.out.println("GameServer: Cannot bind publisher");
+            System.out.println("GameServer: RemoteException: " + e.getMessage());
+        }
+
+        try
+        {
+            registryLobby.rebind(bindingNameLobby,lobby);
+        }
+        catch (RemoteException e){
+            System.out.println("GameServer: Cannot bind lobby");
+            System.out.println("GameServer: RemoteException: " + e.getMessage());
+        }
+
         printIPAddresses();
     }
 
@@ -75,17 +122,6 @@ public class GameRMIServerNormal extends Application{
         {
             InetAddress localhost = InetAddress.getLocalHost();
             System.out.println("Gameserver: IP Address: " + localhost.getHostAddress());
-            // Just in case this host has multiple IP addresses....
-            InetAddress[] allMyIps = InetAddress.getAllByName(localhost.getCanonicalHostName());
-            if (allMyIps != null && allMyIps.length > 1)
-            {
-                System.out.println("Gameserver: Full list of IP addresses:");
-
-                for (InetAddress allMyIp : allMyIps)
-                {
-                    System.out.println("    " + allMyIp);
-                }
-            }
         }
         catch (java.net.UnknownHostException ex)
         {

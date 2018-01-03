@@ -1,13 +1,13 @@
 package Logic;
 
 import Client.RMIClient;
-import Interfaces.IUserListener;
 import com.sun.mail.iap.ConnectionException;
-import org.apache.commons.lang.NotImplementedException;
+import fontyspublisher.IRemotePropertyListener;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.math.BigInteger;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.MessageDigest;
@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Created by maxhe on 13-12-2017.
  */
-public class Battleship extends UnicastRemoteObject implements IUserListener
+public class Battleship extends UnicastRemoteObject implements Remote
 
 {
     private RMIClient rmiClient;
@@ -34,7 +34,6 @@ public class Battleship extends UnicastRemoteObject implements IUserListener
 
     public void register(String username, String email, String password, String passwordConfirm) throws ConnectionException
     {
-
         try
         {
             if(password.length() >= 6)
@@ -92,19 +91,5 @@ public class Battleship extends UnicastRemoteObject implements IUserListener
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * Inform listener about change of a property in the domain. On the basis
-     * of the data provided by the instance of PropertyChangeEvent the observer
-     * is synchronized with respect to the remote domain.
-     *
-     * @param evt PropertyChangeEvent @see java.beans.PropertyChangeEvent
-     * @throws RemoteException
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) throws RemoteException
-    {
-
     }
 }

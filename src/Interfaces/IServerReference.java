@@ -11,5 +11,5 @@ import java.rmi.RemoteException;
  */
 public interface IServerReference extends Remote
 {
-    boolean connect(User user) throws RemoteException;
+    void connectWithGameserver(User user) throws RemoteException;
 }

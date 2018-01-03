@@ -12,5 +12,5 @@ public interface IData extends Remote
 {
     void register(String username, String email, String password)throws RemoteException;
     User login(String email, String password)throws RemoteException;
-    boolean connectWithGameserver(User user) throws RemoteException;
+    void connectWithGameserver(User user) throws RemoteException;
 }

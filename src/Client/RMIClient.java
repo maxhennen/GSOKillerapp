@@ -1,14 +1,10 @@
 package Client;
 
-import CentraleServer.DatabaseRepository;
+import GameServer.RMIGameClient;
 import Interfaces.IData;
-import Interfaces.IDatabaseReference;
 import Logic.Battleship;
-import Logic.User;
 import com.sun.mail.iap.ConnectionException;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,13 +18,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 /**
@@ -109,23 +102,30 @@ public class RMIClient extends Application
         // Create client
         CreateRMIClient(getProperties());
 
-        stage = primaryStage;
+        if(battleship != null)
+        {
 
-        //initialize screens
-        loginScreen = new AnchorPane();
-        chooseModeScreen = new AnchorPane();
-        lobbyScreen = new AnchorPane();
+            stage = primaryStage;
 
-        setupControls();
+            //initialize screens
+            loginScreen = new AnchorPane();
+            chooseModeScreen = new AnchorPane();
+            lobbyScreen = new AnchorPane();
 
-        loginScene = new Scene(loginScreen, 1000, 300);
-        chooseModeScene = new Scene(chooseModeScreen,1000,300);
-        lobbyScene = new Scene(lobbyScreen,1000,300);
+            setupControls();
 
-        primaryStage.setTitle("Battleship");
-        primaryStage.setScene(loginScene);
-        primaryStage.show();
-        primaryStage.toFront();
+            loginScene = new Scene(loginScreen, 1000, 300);
+            chooseModeScene = new Scene(chooseModeScreen, 1000, 300);
+            lobbyScene = new Scene(lobbyScreen, 1000, 300);
+
+            primaryStage.setTitle("Battleship");
+            primaryStage.setScene(loginScene);
+            primaryStage.show();
+            primaryStage.toFront();
+        }
+        else {
+            JOptionPane.showMessageDialog(null,"Cannot connect with server");
+        }
     }
 
     private void setupControls(){
@@ -255,8 +255,12 @@ public class RMIClient extends Application
     private void connectWithGameServer(){
         try
         {
-            System.out.println(battleship.getUser().getUsername());
+            Properties properties = getProperties();
+            String ip = properties.getProperty("ipAddress");
+            stage.close();
+            new RMIGameClient(ip,1101,battleship);
             data.connectWithGameserver(battleship.getUser());
+            System.out.println("Client: Connected with gameserver");
         }
         catch (RemoteException e){
             System.out.println("Client: RemoteException: " + e.getMessage());

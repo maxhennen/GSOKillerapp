@@ -1,8 +1,9 @@
 package Logic;
 
-import Interfaces.IGamePublisher;
 import fontyspublisher.IRemotePropertyListener;
+import fontyspublisher.IRemotePublisherForListener;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Timer;
 /**
  * Created by maxhe on 13-12-2017.
  */
-public class Game extends UnicastRemoteObject implements IGamePublisher
+public class Game extends UnicastRemoteObject implements IRemotePublisherForListener, Remote
 {
     private int ID;
     private Timer timer;
