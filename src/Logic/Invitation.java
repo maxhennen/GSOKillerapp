@@ -7,17 +7,20 @@ import java.io.Serializable;
  */
 public class Invitation implements Serializable
 {
-    private int senderID;
-    private int receiverID;
+    private User sender;
+    private User receiver;
     private String message;
 
-    public Invitation(int senderID, int receiverID, String usernameSender){
-        this.senderID = senderID;
-        this.receiverID = receiverID;
-        this.message = usernameSender + " want play a game with you!";
+    public Invitation(User sender, User receiver){
+        this.sender = sender;
+        this.receiver = receiver;
+        this.message = sender.getUsername() + " wants to play a game with you!";
     }
 
-    public int getSenderID(){return senderID;}
-    public int getReceiverID(){return receiverID;}
-    public String getMessag(){return message;}
+    public User getSender(){return sender;}
+    public User getReceiver(){return receiver;}
+
+    public String toString(){
+        return message;
+    }
 }

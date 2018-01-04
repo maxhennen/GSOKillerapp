@@ -30,7 +30,7 @@ public class CentraleRMIServer extends Application{
     private static final int portNumber = 1099;
 
     // Set binding name for student administration
-    private static final String bindingName = "data";
+    private static final String bindingNameData = "data";
 
     // References to registry and student administration
     private Registry registry = null;
@@ -59,7 +59,7 @@ public class CentraleRMIServer extends Application{
 
         // Bind beurs using registry
         try {
-            registry.rebind(bindingName, (IData) data);
+            registry.rebind(bindingNameData, (IData) data);
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot bind data");
             System.out.println("Server: RemoteException: " + ex.getMessage());

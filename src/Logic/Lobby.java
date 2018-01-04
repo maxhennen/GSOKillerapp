@@ -3,14 +3,19 @@ package Logic;
 import GameServer.RMIGameClient;
 import Interfaces.ILobby;
 import Interfaces.IServerReference;
+import fontyspublisher.IRemotePublisherForDomain;
+import fontyspublisher.IRemotePublisherForListener;
 import fontyspublisher.RemotePublisher;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import javax.swing.*;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -19,24 +24,71 @@ import java.util.List;
 public class Lobby extends UnicastRemoteObject implements IServerReference, ILobby, Serializable
 {
     private List<User> users;
-    private RemotePublisher publisher = null;
+    private List<Invitation> invitations;
+    private IRemotePublisherForDomain publisher = null;
 
-    public Lobby(RemotePublisher publisher) throws RemoteException{
+    public Lobby(IRemotePublisherForDomain publisher) throws RemoteException{
         users = new ArrayList<>();
+        invitations = new ArrayList<>();
         this.publisher = publisher;
         publisher.registerProperty("lobby");
+        publisher.registerProperty("invitation");
     }
 
-    public void sendInvitation(){
+    public void sendInvitation(Invitation invitation) throws ConcurrentModificationException{
+        try
+        {
+            if(invitations.size() != 0)
+            {
+                for (Invitation i : invitations)
+                {
+                    if (!i.toString().equals(invitation.toString()))
+                    {
+                        invitations.add(invitation);
+                    }
+                }
+            }
+            else {
+                invitations.add(invitation);
+            }
+        } catch (ConcurrentModificationException e)
+        {
+            System.out.println("GameServer: ConcurrentModificationException: " + e.getMessage());
+        }
 
+        try
+        {
+            publisher.inform("invitation", invitations, invitations);
+        } catch (RemoteException e)
+        {
+            System.out.println("GameServer: RemoteException: " + e.getMessage());
+        }
     }
 
     public void acceptInvitation(){
 
     }
 
-    public void declineInvitation(){
-
+    public void declineInvitation(Invitation invitation)
+    {
+        try{
+            for (Iterator<Invitation> i = invitations.iterator(); i.hasNext();)
+            {
+                Invitation in = i.next();
+                if(in.toString().equals(invitation.toString())){
+                    i.remove();
+                }
+            }
+            publisher.inform("invitation",invitations,invitations);
+            System.out.println("invitation removed");
+        }
+        catch (RemoteException e){
+            System.out.println("GameServer: RemoteException: " + e.getMessage());
+        }
+        catch (ConcurrentModificationException e){
+            System.out.println("GameServer: ConcurrentModificationException: " + e.getMessage());
+            declineInvitation(invitation);
+        }
     }
 
     public void receiveInvitation(Invitation invitation){
@@ -50,20 +102,9 @@ public class Lobby extends UnicastRemoteObject implements IServerReference, ILob
         {
             users.add(user);
             publisher.inform("lobby",null,users);
-            System.out.println("user added");
         }
         catch (RemoteException e){
-            System.out.println("GameClient: RemoteException: " + e.getMessage());
+            System.out.println("GameServer: RemoteException: " + e.getMessage());
         }
     }
-
-    /**
-     * Gets a list of all players in this lobby
-     * @return a list of users containing individual players
-     */
-    public ObservableList<User> getPlayers() throws RemoteException
-    {
-        return FXCollections.unmodifiableObservableList(FXCollections.observableList(users));
-    }
-
 }

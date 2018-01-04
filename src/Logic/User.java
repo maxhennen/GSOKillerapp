@@ -1,11 +1,12 @@
 package Logic;
 
-import fontyspublisher.IRemotePropertyListener;
+import fontyspublisher.IRemotePublisherForDomain;
 
-import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by maxhe on 13-12-2017.
@@ -13,24 +14,18 @@ import java.rmi.RemoteException;
 public class User implements Serializable
 {
     private String username;
+    private int ID;
+    private List<Invitation> invitations;
 
-    public User(String username){
+    public User(String username, int id) throws RemoteException{
         this.username = username;
+        this.ID = id;
+        invitations = new ArrayList<>();
     }
 
     public String getUsername(){return username;}
 
-    public void sendInvitation(){
-
-    };
-
-    public void acceptInvitation(){
-
-    }
-
-    public void declineInvitation(){
-
-    }
+    public int getID(){return ID;}
 
     public void placeShip(){
 
@@ -41,12 +36,11 @@ public class User implements Serializable
         return false;
     }
 
-    public void receiveInvitation(Invitation invitation){
 
-    }
 
     @Override
     public String toString(){
         return username;
     }
+
 }

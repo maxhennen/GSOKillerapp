@@ -2,10 +2,8 @@ package Logic;
 
 import Client.RMIClient;
 import com.sun.mail.iap.ConnectionException;
-import fontyspublisher.IRemotePropertyListener;
 
 import javax.swing.*;
-import java.beans.PropertyChangeEvent;
 import java.math.BigInteger;
 import java.rmi.Remote;
 import java.rmi.RemoteException;

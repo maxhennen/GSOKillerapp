@@ -63,6 +63,7 @@ public class RMIClient extends Application
     private Registry registry = null;
     private IData data = null;
     private Battleship battleship = null;
+    private RMIGameClient gameClient = null;
 
 
     private void CreateRMIClient(Properties properties){
@@ -258,7 +259,7 @@ public class RMIClient extends Application
             Properties properties = getProperties();
             String ip = properties.getProperty("ipAddress");
             stage.close();
-            new RMIGameClient(ip,1101,battleship);
+            gameClient = new RMIGameClient(ip,1101,battleship);
             data.connectWithGameserver(battleship.getUser());
             System.out.println("Client: Connected with gameserver");
         }

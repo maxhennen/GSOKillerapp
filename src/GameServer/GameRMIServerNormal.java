@@ -45,6 +45,7 @@ public class GameRMIServerNormal extends Application{
     private static final String bindingNamePublisher = "RemotePublisher";
     private RemotePublisher publisher = null;
 
+
     // Constructor
     public GameRMIServerNormal() throws RemoteException {
 

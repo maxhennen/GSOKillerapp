@@ -47,14 +47,14 @@ public class DatabasePersistentie extends UnicastRemoteObject implements IDataba
         try
         {
             getConnection();
-            String query = "SELECT name FROM Users WHERE email = ? AND password = ?;";
+            String query = "SELECT id, name FROM Users WHERE email = ? AND password = ?;";
             prep = conn.prepareStatement(query);
             prep.setString(1,email);
             prep.setString(2,password);
             ResultSet results = prep.executeQuery();
 
             while (results.next()){
-                user = new User(results.getString("name"));
+                user = new User(results.getString("name"),results.getInt("id"));
             }
         }
         catch (SQLException e)
