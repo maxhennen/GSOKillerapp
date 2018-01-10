@@ -1,6 +1,8 @@
 package Logic;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 /**
  * Created by maxhe on 13-12-2017.
@@ -17,10 +19,17 @@ public class Invitation implements Serializable
         this.message = sender.getUsername() + " wants to play a game with you!";
     }
 
-    public User getSender(){return sender;}
-    public User getReceiver(){return receiver;}
-
-    public String toString(){
+    public String toString() {
         return message;
+    }
+
+    public User getSender()
+    {
+        return sender;
+    }
+
+    public User getReceiver()
+    {
+        return receiver;
     }
 }

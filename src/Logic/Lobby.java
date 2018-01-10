@@ -1,6 +1,7 @@
 package Logic;
 
 import GameServer.RMIGameClient;
+import Interfaces.IGame;
 import Interfaces.ILobby;
 import Interfaces.IServerReference;
 import fontyspublisher.IRemotePublisherForDomain;
@@ -25,86 +26,63 @@ public class Lobby extends UnicastRemoteObject implements IServerReference, ILob
 {
     private List<User> users;
     private List<Invitation> invitations;
-    private IRemotePublisherForDomain publisher = null;
+    private List<Game> games;
+    private IRemotePublisherForDomain publisherLobby = null;
+    private IRemotePublisherForDomain publisherGame = null;
 
-    public Lobby(IRemotePublisherForDomain publisher) throws RemoteException{
+    public Lobby(IRemotePublisherForDomain publisherLobby,IRemotePublisherForDomain publisherGame) throws RemoteException{
         users = new ArrayList<>();
         invitations = new ArrayList<>();
-        this.publisher = publisher;
-        publisher.registerProperty("lobby");
-        publisher.registerProperty("invitation");
+        games = new ArrayList<>();
+        this.publisherLobby = publisherLobby;
+        this.publisherGame = publisherGame;
+
+        this.publisherLobby.registerProperty("lobby");
+        this.publisherLobby.registerProperty("invitation");
+        this.publisherGame.registerProperty("game");
     }
 
-    public void sendInvitation(Invitation invitation) throws ConcurrentModificationException{
-        try
+    public void sendInvitation(Invitation invitation) throws ConcurrentModificationException, RemoteException{
+        if(invitations.size() != 0)
         {
-            if(invitations.size() != 0)
+            for (Invitation i : invitations)
             {
-                for (Invitation i : invitations)
+                if (!i.toString().equals(invitation.toString()))
                 {
-                    if (!i.toString().equals(invitation.toString()))
-                    {
-                        invitations.add(invitation);
-                    }
+                    invitations.add(invitation);
                 }
             }
-            else {
-                invitations.add(invitation);
-            }
-        } catch (ConcurrentModificationException e)
-        {
-            System.out.println("GameServer: ConcurrentModificationException: " + e.getMessage());
+        }
+        else {
+            invitations.add(invitation);
         }
 
+        publisherLobby.inform("invitation", invitations, invitations);
+    }
+
+    public void declineInvitation(Invitation invitation) throws RemoteException
+    {
+        publisherLobby.inform("invitation",invitations,invitations);
+        System.out.println("invitation removed");
+    }
+
+    @Override
+    public void acceptInvitation(Invitation invitation, IGame game) throws RemoteException
+    {
         try
         {
-            publisher.inform("invitation", invitations, invitations);
-        } catch (RemoteException e)
+            game.createGame(invitation.getReceiver(),invitation.getSender());
+            publisherGame.inform("game",null,game);
+        } catch (NullPointerException e)
         {
-            System.out.println("GameServer: RemoteException: " + e.getMessage());
+            System.out.println("GameServer: NullpointerException " + e.getMessage());
         }
-    }
-
-    public void acceptInvitation(){
-
-    }
-
-    public void declineInvitation(Invitation invitation)
-    {
-        try{
-            for (Iterator<Invitation> i = invitations.iterator(); i.hasNext();)
-            {
-                Invitation in = i.next();
-                if(in.toString().equals(invitation.toString())){
-                    i.remove();
-                }
-            }
-            publisher.inform("invitation",invitations,invitations);
-            System.out.println("invitation removed");
-        }
-        catch (RemoteException e){
-            System.out.println("GameServer: RemoteException: " + e.getMessage());
-        }
-        catch (ConcurrentModificationException e){
-            System.out.println("GameServer: ConcurrentModificationException: " + e.getMessage());
-            declineInvitation(invitation);
-        }
-    }
-
-    public void receiveInvitation(Invitation invitation){
-
     }
 
     @Override
     public void connectWithGameserver(User user) throws RemoteException
     {
-        try
-        {
-            users.add(user);
-            publisher.inform("lobby",null,users);
-        }
-        catch (RemoteException e){
-            System.out.println("GameServer: RemoteException: " + e.getMessage());
-        }
+        users.add(user);
+        publisherLobby.inform("lobby",null,users);
     }
 }

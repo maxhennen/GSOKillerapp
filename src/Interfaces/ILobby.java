@@ -1,6 +1,7 @@
 package Interfaces;
 
 import GameServer.RMIGameClient;
+import Logic.Game;
 import Logic.Invitation;
 import Logic.User;
 import com.sun.org.apache.regexp.internal.RE;
@@ -16,4 +17,5 @@ public interface ILobby extends Remote
 {
     void sendInvitation(Invitation invitation)throws RemoteException;
     void declineInvitation(Invitation invitation) throws RemoteException;
+    void acceptInvitation(Invitation invitation, IGame game) throws RemoteException;
 }

@@ -259,7 +259,7 @@ public class RMIClient extends Application
             Properties properties = getProperties();
             String ip = properties.getProperty("ipAddress");
             stage.close();
-            gameClient = new RMIGameClient(ip,1101,battleship);
+            gameClient = new RMIGameClient(ip,1101,1102, battleship);
             data.connectWithGameserver(battleship.getUser());
             System.out.println("Client: Connected with gameserver");
         }

@@ -1,12 +1,14 @@
 package GameServer;
 
+import Administration.GameAdmin;
+import Administration.LobbyAdmin;
+import Interfaces.IGame;
 import Interfaces.ILobby;
-import Logic.Battleship;
-import Logic.Invitation;
-import Logic.User;
+import Logic.*;
 import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForDomain;
 import fontyspublisher.IRemotePublisherForListener;
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,10 +16,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
 import javax.swing.*;
+import javax.swing.text.html.ImageView;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
@@ -32,21 +42,27 @@ import java.util.NoSuchElementException;
 /**
  * Created by maxhe on 20-12-2017.
  */
-public class RMIGameClient extends UnicastRemoteObject implements IRemotePropertyListener
+public class RMIGameClient
 {
     private User user;
+    private LobbyAdmin lobbyAdmin;
+    private GameAdmin gameAdmin;
     // Create bindingnames
     private static final String bindingNameLobby = "lobby";
     private static final String bindingNameGame = "game";
-    private static final String bindingNamePublisher = "RemotePublisher";
+    private static final String bindingNamePublisherGame = "RemotePublisherGame";
+    private static final String bindingNamePublisherLobby = "RemotePublisherLobby";
 
-    private Registry registry = null;
+    private Registry registryLobby = null;
+    private Registry registryGame = null;
+    private IGame game = null;
     private ILobby lobby = null;
-    private IRemotePublisherForListener publisher;
+    private IRemotePublisherForListener publisherLobby;
+    private IRemotePublisherForListener publisherGame;
 
-    // Nodes
+    // Nodes lobbyscreen
     private AnchorPane lobbySreen;
-    private Stage stage;
+    private Stage lobbyStage;
     private Scene lobbyScene;
     private Label lblPlayers;
     private ListView lstPlayers;
@@ -56,24 +72,79 @@ public class RMIGameClient extends UnicastRemoteObject implements IRemotePropert
     private Button btnAccept;
     private Button btnDecline;
 
-    public RMIGameClient(String ipAddress, int portNr, Battleship battleship)throws RemoteException{
+    // Nodes gamescreen
+    private AnchorPane gameScreen;
+    private Stage gameStage;
+    private Scene gameScene;
+    private Label lblPlayerOne;
+    private Label lblPlayerTwo;
+    private TextField tfTileCode;
+    private Button btnLaunch;
+    private Label lblTimer;
+
+    public RMIGameClient(String ipAddress, int portNrLobby,int portNrGame, Battleship battleship)throws RemoteException{
+        this.user = battleship.getUser();
         setUpControls();
-        createGameClient(ipAddress,portNr, battleship);
+        createGameClientLobby(ipAddress,portNrLobby);
+        createGameClientGame(ipAddress,portNrGame);
+        lobbyAdmin = new LobbyAdmin(this,this.user);
+        gameAdmin = new GameAdmin(this);
+
     }
 
-    public IRemotePublisherForListener getPublisher(){return publisher;}
+    public IRemotePublisherForListener getPublisherLobby(){return publisherLobby;}
+    public IRemotePublisherForListener getPublisherGame(){return publisherGame;}
 
-    private void createGameClient(String ipAddress, int portNr, Battleship battleship){
-        this.user = battleship.getUser();
-
+    private void createGameClientGame(String ipAdress, int portNrGame){
         // Print ip and port
-        System.out.println("GameClient: IP: " + ipAddress);
-        System.out.println("GameClient: Port: " + portNr);
+        System.out.println("GameClient: IP: " + ipAdress);
+        System.out.println("GameClient: Port Game: " + portNrGame);
+
 
         //Locate registry at ip and port
         try
         {
-            registry = LocateRegistry.getRegistry(ipAddress,portNr);
+            registryGame = LocateRegistry.getRegistry(ipAdress,portNrGame);
+            System.out.println("GameClient: Registry is located");
+        }
+        catch (RemoteException e){
+            System.out.println("GameClient: RemoteException: " + e.getMessage());
+        }
+
+        if(registryGame != null){
+            try{
+                game = (IGame) registryGame.lookup(bindingNameGame);
+                publisherGame = (IRemotePublisherForListener) registryGame.lookup(bindingNamePublisherGame);
+            }
+            catch (RemoteException e){
+                System.out.println("GameClient: Cannot bind game");
+                System.out.println("GameClient: RemoteException: " + e.getMessage());
+                game = null;
+            }
+            catch (NotBoundException e){
+                System.out.println("GameClient: Cannot bind game");
+                System.out.println("GameClient: NotBoundException: " + e.getMessage());
+                game = null;
+            }
+            catch (NullPointerException e){
+                System.out.println("GameClient: Cannot bind game");
+                System.out.println("GameClient: NullpointerException:" + e.getMessage());
+            }
+        }
+    }
+
+    private void createGameClientLobby(String ipAddress, int portNrLobby){
+
+
+        // Print ip and port
+        System.out.println("GameClient: IP: " + ipAddress);
+        System.out.println("GameClient: Port Lobby: " + portNrLobby);
+
+
+        //Locate registry at ip and port
+        try
+        {
+            registryLobby = LocateRegistry.getRegistry(ipAddress,portNrLobby);
             System.out.println("GameClient: Registry is located");
         }
         catch (RemoteException e){
@@ -81,12 +152,10 @@ public class RMIGameClient extends UnicastRemoteObject implements IRemotePropert
             System.out.println("GameClient: RemoteException: " + e.getMessage());
         }
 
-        if(registry != null){
+        if(registryLobby != null){
             try{
-                lobby = (ILobby) registry.lookup(bindingNameLobby);
-                publisher = (IRemotePublisherForListener) registry.lookup(bindingNamePublisher);
-                publisher.subscribeRemoteListener(this,"lobby");
-                publisher.subscribeRemoteListener(this,"invitation");
+                lobby = (ILobby) registryLobby.lookup(bindingNameLobby);
+                publisherLobby = (IRemotePublisherForListener) registryLobby.lookup(bindingNamePublisherLobby);
             }
             catch (RemoteException e){
                 System.out.println("GameClient: Cannot bind lobby");
@@ -106,7 +175,9 @@ public class RMIGameClient extends UnicastRemoteObject implements IRemotePropert
     }
 
     private void setUpControls(){
-        stage = new Stage();
+        lobbyStage = new Stage();
+
+        // initialize nodes lobbyscreen
         lobbySreen = new AnchorPane();
 
         lblPlayers = new Label();
@@ -148,6 +219,7 @@ public class RMIGameClient extends UnicastRemoteObject implements IRemotePropert
         btnAccept.setLayoutX(242);
         btnAccept.setPrefHeight(31);
         btnAccept.setPrefWidth(132);
+        btnAccept.setOnAction(event -> acceptInvitation((Invitation)lstInvitations.getSelectionModel().getSelectedItem()));
         btnAccept.setText("Accept Invitation");
 
         btnDecline = new Button();
@@ -161,55 +233,154 @@ public class RMIGameClient extends UnicastRemoteObject implements IRemotePropert
         lobbySreen.getChildren().addAll(lblPlayers,lblInvitations,lstInvitations,lstPlayers,btnAccept,btnDecline,btnSend);
 
         lobbyScene = new Scene(lobbySreen,600,400);
-        stage.setTitle("Lobby");
-        stage.setScene(lobbyScene);
-        stage.show();
-        stage.toFront();
+        lobbyStage.setTitle("Lobby");
+        lobbyStage.setScene(lobbyScene);
+        lobbyStage.show();
+        lobbyStage.toFront();
+
+        //initialize nodes gamescreen
+
+        gameScreen = new AnchorPane();
+        gameScreen.setPrefHeight(609);
+        gameScreen.setPrefWidth(953);
+
+        tfTileCode = new TextField();
+        tfTileCode.setLayoutY(22);
+        tfTileCode.setLayoutX(14);
+        tfTileCode.setPrefWidth(187);
+        tfTileCode.setPrefHeight(31);
+
+        btnLaunch = new Button();
+        btnLaunch.setLayoutY(22);
+        btnLaunch.setLayoutX(209);
+        btnLaunch.setPrefHeight(31);
+        btnLaunch.setPrefWidth(65);
+        btnLaunch.setText("Launch rocket");
+
+        lblPlayerOne = new Label();
+        lblPlayerOne.setLayoutX(14);
+        lblPlayerOne.setLayoutY(177);
+        lblPlayerOne.setPrefWidth(200);
+        lblPlayerOne.setPrefHeight(21);
+
+        lblPlayerTwo = new Label();
+        lblPlayerTwo.setLayoutX(484);
+        lblPlayerTwo.setLayoutY(177);
+        lblPlayerTwo.setPrefHeight(21);
+        lblPlayerTwo.setPrefWidth(200);
+
+        lblTimer = new Label();
+        lblTimer.setLayoutX(484);
+        lblTimer.setLayoutY(20);
+        lblTimer.setPrefWidth(200);
+        lblTimer.setPrefHeight(21);
+
+        gameScreen.getChildren().addAll(tfTileCode,btnLaunch,lblPlayerOne,lblPlayerTwo,lblTimer);
+
+        gameScene = new Scene(gameScreen);
+        gameStage = new Stage();
+        gameStage.setTitle(this.user.getUsername());
+        gameStage.setScene(gameScene);
     }
 
+    public void gameSetup(){
 
-    /**
-     * Inform listener about change of a property in the domain. On the basis
-     * of the data provided by the instance of PropertyChangeEvent the observer
-     * is synchronized with respect to the remote domain.
-     *
-     * @param evt PropertyChangeEvent @see java.beans.PropertyChangeEvent
-     * @throws RemoteException
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) throws RemoteException
-    {
+        try
+        {
+            if(this.user.getUsername().equals(game.getPlayerOne().getUsername()) || this.user.getUsername().equals(game.getPlayerTwo().getUsername())){
+                try
+                {
+                    lblPlayerOne.setText(game.getPlayerOne().getUsername());
+                    lblPlayerTwo.setText(game.getPlayerTwo().getUsername());
+                    game.setPlayerTurn();
+                    setTiles(game.getTilesPlayerOne(),game.getPlayerOne().getUsername());
+                    setTiles(game.getTilesPlayerTwo(),game.getPlayerTwo().getUsername());
+                    lobbyStage.close();
+                    gameStage.show();
+                    gameStage.toFront();
+                    AnimationTimer animationTimer = new AnimationTimer()
+                    {
+                        @Override
+                        public void handle(long now)
+                        {
+                            try
+                            {
+                                lblTimer.setText(String.valueOf(game.getTimer()));
+                            } catch (RemoteException e)
+                            {
+                                System.out.println("GameClient: RemoteException: " + e.getMessage());
+                            }
+                        }
+                    };
+                    animationTimer.start();
+                } catch (RemoteException e)
+                {
+                    System.out.println("GameClient: RemoteException: " + e.getMessage());
+                }
+            }
+        } catch (RemoteException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void setTiles(ArrayList<Tile> tiles, String username){
         Platform.runLater(new Runnable()
         {
             @Override
             public void run()
             {
-                switch (evt.getPropertyName()){
-                    case "lobby":
-                        usersPropertyChange(evt);
-                        return;
-                    case "invitation":
-                        invitationsPropertyChange(evt);
-                        return;
+                for(Tile tile: tiles){
+                    javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView();
+                    imageView.setFitWidth(30);
+                    imageView.setFitHeight(30);
+                    imageView.setLayoutX(tile.getLayoutX());
+                    imageView.setLayoutY(tile.getLayoutY());
+
+                    if(tile.getStatus() == TileStatus.SHIP){
+                        if(user.getUsername().equals(username))
+                        {
+                            imageView.setImage(new Image("assets/ship.jpg"));
+                        }
+                        else {
+                            imageView.setImage(new Image("assets/water.jpg"));
+                        }
+                    }
+                    if(tile.getStatus() == TileStatus.HIT){
+
+                    }
+                    if()
+
+                    else {
+                        imageView.setImage(new Image("assets/water.jpg"));
+                    }
+
+                    try
+                    {
+                        if(!user.getUsername().equals(game.getPlayerTurn().getUsername())){
+                            btnLaunch.setDisable(true);
+                        }
+                    } catch (RemoteException e)
+                    {
+                        System.out.println("GameClient: RemoteException: " + e.getMessage());
+                    }
+
+                    gameScreen.getChildren().add(imageView);
                 }
             }
         });
     }
 
-    public void invitationsPropertyChange(PropertyChangeEvent evt){
-        lstInvitations.getItems().clear();
-        ObservableList<Invitation> invitations = FXCollections.observableList((List<Invitation>)evt.getNewValue());
+    private void acceptInvitation(Invitation invitation){
 
-        for (Invitation i:invitations)
+        try
         {
-            if(this.user.getUsername().equals(i.getReceiver().getUsername())){
-                lstInvitations.getItems().add(i);
-            }
-        }
-    }
+            lobby.acceptInvitation(invitation, game);
 
-    public void usersPropertyChange(PropertyChangeEvent evt){
-        lstPlayers.setItems(FXCollections.observableList((List<User>) evt.getNewValue()));
+        } catch (RemoteException e)
+        {
+            System.out.println("GameClient: RemoteException: " + e.getMessage());
+        }
     }
 
     private void sendInvitation(User receiver){
@@ -227,6 +398,9 @@ public class RMIGameClient extends UnicastRemoteObject implements IRemotePropert
         {
             System.out.println("GameClient: RemoteException: " + e.getMessage());
         }
+        catch (NullPointerException e){
+            JOptionPane.showMessageDialog(null,"You didn't select a player");
+        }
     }
 
     private void declineInvitation(Invitation invitation){
@@ -237,5 +411,21 @@ public class RMIGameClient extends UnicastRemoteObject implements IRemotePropert
         {
             System.out.println("GameClient: RemoteException: " + e.getMessage());
         }
+    }
+
+    public void setLstInvitations(ObservableList<Invitation> invitations){
+        lstInvitations.getItems().clear();
+        //ObservableList<Invitation> invitations = ;
+
+        for (Invitation i:invitations)
+        {
+                if(this.user.getUsername().equals(i.getReceiver().getUsername())){
+                    lstInvitations.getItems().add(i);
+                }
+        }
+    }
+
+    public void setLstPlayers(ObservableList<User> users){
+        lstPlayers.setItems(users);
     }
 }
