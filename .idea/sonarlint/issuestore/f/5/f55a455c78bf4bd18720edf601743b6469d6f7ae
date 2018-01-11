@@ -1,0 +1,8 @@
+
+Nsquid:UselessImportCheck"'Remove this unused import 'Logic.User'.(¾‘”øøÿÿÿÿ
+\squid:UselessImportCheck"5Remove this unused import 'GameServer.RMIGameClient'.(£¤…—ûÿÿÿÿ
+Jsquid:S1191"5Use classes from the Java API instead of Sun classes.(÷—•–
+Isquid:UselessImportCheck"'Remove this unused import 'Logic.Game'.(´þ€Ë
+esquid:UselessImportCheck">Remove this unused import 'javafx.collections.ObservableList'.(ÄÜ€éüÿÿÿÿ
+rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(²¹’„øÿÿÿÿ
+dsquid:UselessImportCheck"BRemove this unused import 'com.sun.org.apache.regexp.internal.RE'.(÷—•–

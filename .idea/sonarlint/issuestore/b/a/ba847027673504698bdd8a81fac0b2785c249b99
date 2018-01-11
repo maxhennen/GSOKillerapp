@@ -1,0 +1,37 @@
+
+Zsquid:S1226">Introduce a new variable instead of reusing the parameter "y".(ôìõð8ÈÐÍ¥Ž,
+|squid:S3923"[Remove this conditional structure or edit its code blocks so that they're not all the same.(¸™†ÿûÿÿÿÿ8ÈÐÍ¥Ž,
+Šsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(ðçž½ÿÿÿÿÿ
+Zsquid:S1226">Introduce a new variable instead of reusing the parameter "x".(—¶½8ÈÐÍ¥Ž,
+Zsquid:S1226">Introduce a new variable instead of reusing the parameter "y".(“¾Ñ¯8çû¤Ž,
+ssquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(î²»ýÿÿÿÿ8ÈÐÍ¥Ž,
+Zsquid:S1226">Introduce a new variable instead of reusing the parameter "y".(“¾Ñ¯8çû¤Ž,
+…squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(þãÛ½
+@squid:S2160"+Override the "equals" method in this class.(Õ‚¢Æ
+¬%squid:RedundantThrowsDeclarationCheck"qRemove the declaration of thrown exception 'java.rmi.RemoteException', as it cannot be thrown from method's body.(Íð‡šøÿÿÿÿ8ÈÐÍ¥Ž,
+…squid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(Ï´ô 
+_squid:S1226">Introduce a new variable instead of reusing the parameter "x".(–¿“ ÿÿÿÿÿ8ÈÐÍ¥Ž,
+isquid:S2259"HA "NullPointerException" could be thrown; "playerTurn" is nullable here.(£™ú—øÿÿÿÿ8ÈÐÍ¥Ž,
+Ksquid:S1066"/Merge this if statement with the enclosing one.(ÔÊË…8ÈÐÍ¥Ž,
+wsquid:S3923"[Remove this conditional structure or edit its code blocks so that they're not all the same.(éâ“÷8ÈÐÍ¥Ž,
+‚squid:S1488"aImmediately return this expression instead of assigning it to the temporary variable "randomInt".(Óèîèüÿÿÿÿ8ÈÐÍ¥Ž,
+Zsquid:UselessImportCheck"8Remove this unused import 'Interfaces.IServerReference'.(þÒìÝ
+Nsquid:UselessImportCheck",Remove this unused import 'java.rmi.Remote'.(Ô¤ÈÓ
+usquid:S1450"TRemove the "moves" field and declare it as a local variable in the relevant methods.(„Â‚üÿÿÿÿ8ÇÁù£Ž,
+Šsquid:S1319"pThe return type of this method should be an interface such as "List" rather than the implementation "ArrayList".(ò’é¥ýÿÿÿÿ
+Dsquid:S1948"/Make "publisherGame" transient or serializable.(ÒãŽ®
+ssquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(“¦¿Éÿÿÿÿÿ8ÈÐÍ¥Ž,
+lsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(ÔÖØ^
+Wsquid:UselessImportCheck"5Remove this unused import 'javafx.scene.image.Image'.(‰¿½Ç
+_squid:S1226">Introduce a new variable instead of reusing the parameter "x".(ÿ»–êþÿÿÿÿ8ÈÐÍ¥Ž,
+y
+squid:S135"YReduce the total number of break and continue statements in this loop to use at most one.(˜ïˆžÿÿÿÿÿ8ÈÐÍ¥Ž,
+ksquid:UselessImportCheck"DRemove this unused import 'fontyspublisher.IRemotePropertyListener'.(ŠŸÜùÿÿÿÿ
+Usquid:UselessImportCheck".Remove this unused import 'Interfaces.ILobby'.(¸üØ¿þÿÿÿÿ
+jsquid:UselessImportCheck"HRemove this unused import 'fontyspublisher.IRemotePublisherForListener'.(¤º‚È
+Y
+squid:S106"9Replace this use of System.out or System.err by a logger.(£™ú—øÿÿÿÿ8ÈÐÍ¥Ž,
+nsquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(â•¸¢8ÈÐÍ¥Ž,
+_squid:S1226">Introduce a new variable instead of reusing the parameter "x".(»œá½üÿÿÿÿ8ÈÐÍ¥Ž,
+]squid:UselessImportCheck"6Remove this unused import 'fontyspublisher.Publisher'.(ÙŸÛœûÿÿÿÿ
+Ksquid:S1066"/Merge this if statement with the enclosing one.(Ù½¦à8ÈÐÍ¥Ž,

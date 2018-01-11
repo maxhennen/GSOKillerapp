@@ -1,29 +1,34 @@
 package Logic;
 
+import java.io.Serializable;
+
 /**
- * Created by maxhe on 10-1-2018.
+ * Created by maxhe on 11-1-2018.
  */
-public class Move
+public class Move implements Serializable
 {
-    private User user;
-    private int X;
-    private int Y;
+    private String tileID;
+    private boolean playerOne;
+    private TileStatus status;
 
-    public Move(User user, int X, int Y){
-        this.user = user;
-        this.X = X;
-        this.Y = Y;
+    public Move(int x, int y, boolean playerOne, TileStatus status){
+        this.tileID = x + ";" + y;
+        this.playerOne = playerOne;
+        this.status = status;
     }
 
-    public User getUser(){return user;}
-
-    public int getX()
+    public String getTileID()
     {
-        return X;
+        return tileID;
     }
 
-    public int getY()
+    public boolean getPlayerOne()
     {
-        return Y;
+        return playerOne;
+    }
+
+    public TileStatus getStatus()
+    {
+        return status;
     }
 }

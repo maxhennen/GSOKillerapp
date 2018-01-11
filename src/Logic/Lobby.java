@@ -62,8 +62,13 @@ public class Lobby extends UnicastRemoteObject implements IServerReference, ILob
 
     public void declineInvitation(Invitation invitation) throws RemoteException
     {
-        publisherLobby.inform("invitation",invitations,invitations);
-        System.out.println("invitation removed");
+        Iterator<Invitation> i = invitations.iterator();
+        while (i.hasNext()){
+            if(i.next().toString().equals(invitation.toString())){
+                i.remove();
+            }
+        }
+        publisherLobby.inform("invitation",null,invitations);
     }
 
     @Override

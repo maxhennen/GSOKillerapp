@@ -20,14 +20,11 @@ import java.util.*;
  */
 public class Game extends UnicastRemoteObject implements IGame, Serializable
 {
-    private int ID;
-
-    private Timer timer;
     private Random random;
 
     private User playerOne;
     private User playerTwo;
-    private User playerTurn;
+    private User playerTurn = null;
 
     private ArrayList<Ship> shipsPlayerOne;
     private ArrayList<Ship> shipsPlayerTwo;
@@ -35,6 +32,7 @@ public class Game extends UnicastRemoteObject implements IGame, Serializable
     private ArrayList<Tile> tilesPlayerTwo;
 
     private int secondsTimer;
+    private ArrayList<Move> moves;
 
     private IRemotePublisherForDomain publisherGame = null;
 
@@ -92,6 +90,8 @@ public class Game extends UnicastRemoteObject implements IGame, Serializable
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
 
+        setPlayerTurn();
+
         setTilesPlayerOne();
         setTilesPlayerTwo();
 
@@ -101,8 +101,6 @@ public class Game extends UnicastRemoteObject implements IGame, Serializable
         givePlayersShips(shipsPlayerOne,tilesPlayerOne);
         givePlayersShips(shipsPlayerTwo,tilesPlayerTwo);
 
-
-        timer = new Timer();
         timer();
     }
 
@@ -123,26 +121,42 @@ public class Game extends UnicastRemoteObject implements IGame, Serializable
     @Override
     public void launch(int x, int y) throws RemoteException
     {
-        Move move = new Move(playerTurn,x,y);
+        moves = new ArrayList<>();
         if(playerTurn.getUsername().equals(playerOne.getUsername())){
-            checkTilesLaunch(x,y,tilesPlayerTwo);
-            publisherGame.inform("launch",null,move);
+
+            if (checkTilesLaunch(x,y,tilesPlayerTwo))
+            {
+                moves.add(new Move(x,y,true,TileStatus.HIT));
+            }
+            else {
+                moves.add(new Move(x,y,true,TileStatus.MIS));
+            }
         }
         else {
-            checkTilesLaunch(x,y,tilesPlayerOne);
-            publisherGame.inform("launch",null,move);
+            if(checkTilesLaunch(x,y,tilesPlayerOne)){
+                moves.add(new Move(x,y,false,TileStatus.HIT));
+            }
+            else {
+                moves.add(new Move(x,y,false,TileStatus.MIS));
+            }
         }
+        publisherGame.inform("launch",null,moves);
     }
 
-    private void checkTilesLaunch(int x, int y, ArrayList<Tile> tiles){
+    private boolean checkTilesLaunch(int x, int y, ArrayList<Tile> tiles){
+
+        boolean check = false;
+
         for(Tile tile : tiles){
             if(tile.getX() == x && tile.getY() == y){
                 tile.setStatus(TileStatus.HIT);
+                check = true;
             }
             else {
                 tile.setStatus(TileStatus.MIS);
             }
         }
+        return check;
     }
 
     private void givePlayersShips(ArrayList<Ship> ships, ArrayList<Tile> tiles){
@@ -251,20 +265,19 @@ public class Game extends UnicastRemoteObject implements IGame, Serializable
                 }
             }
         }
-        System.out.println(ship.getName() + x + y);
     }
 
     private void setTilesPlayerOne() throws RemoteException{
         tilesPlayerOne = new ArrayList<>();
-        int x = 14;
-        int y = 233;
+        int x = 50;
+        int y = 270;
         setTiles(tilesPlayerOne,x,y,true);
     }
 
     private void setTilesPlayerTwo() throws RemoteException{
         tilesPlayerTwo = new ArrayList<>();
-        int x = 484;
-        int y = 233;
+        int x = 510;
+        int y = 270;
         setTiles(tilesPlayerTwo,x,y,false);
     }
 
@@ -273,14 +286,13 @@ public class Game extends UnicastRemoteObject implements IGame, Serializable
         int counterY = 0;
         for(int i = 0; i < 100; i++){
             Tile tile = new Tile(x,y);
-
             x = x + 32;
             counterX++;
             if(playerOne)
             {
                 if(counterX == 10)
                 {
-                    x = 14;
+                    x = 50;
                     y = y + 32;
                     counterX = 0;
                     counterY = counterY + 1;
@@ -289,7 +301,7 @@ public class Game extends UnicastRemoteObject implements IGame, Serializable
             else {
                 if(counterX == 10)
                 {
-                    x = 484;
+                    x = 510;
                     y = y + 32;
                     counterX = 0;
                     counterY = counterY + 1;
@@ -318,6 +330,7 @@ public class Game extends UnicastRemoteObject implements IGame, Serializable
                 playerTurn = playerOne;
             }
         }
+        System.out.println(playerTurn.getUsername());
     }
 
     public User getPlayerTurn() throws RemoteException{return playerTurn;}

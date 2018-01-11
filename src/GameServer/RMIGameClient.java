@@ -24,6 +24,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
+import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
 import javax.swing.text.html.ImageView;
@@ -78,9 +79,12 @@ public class RMIGameClient
     private Scene gameScene;
     private Label lblPlayerOne;
     private Label lblPlayerTwo;
-    private TextField tfTileCode;
+    private TextField tfTileCodeX;
+    private TextField tfTileCodeY;
     private Button btnLaunch;
     private Label lblTimer;
+    private ArrayList<javafx.scene.image.ImageView> imageViewsPlayerOne;
+    private ArrayList<javafx.scene.image.ImageView> imageViewsPlayerTwo;
 
     public RMIGameClient(String ipAddress, int portNrLobby,int portNrGame, Battleship battleship)throws RemoteException{
         this.user = battleship.getUser();
@@ -244,17 +248,24 @@ public class RMIGameClient
         gameScreen.setPrefHeight(609);
         gameScreen.setPrefWidth(953);
 
-        tfTileCode = new TextField();
-        tfTileCode.setLayoutY(22);
-        tfTileCode.setLayoutX(14);
-        tfTileCode.setPrefWidth(187);
-        tfTileCode.setPrefHeight(31);
+        tfTileCodeX = new TextField();
+        tfTileCodeX.setLayoutY(22);
+        tfTileCodeX.setLayoutX(14);
+        tfTileCodeX.setPrefWidth(15);
+        tfTileCodeX.setPrefHeight(31);
+
+        tfTileCodeY = new TextField();
+        tfTileCodeY.setLayoutY(22);
+        tfTileCodeY.setLayoutX(40);
+        tfTileCodeY.setPrefWidth(15);
+        tfTileCodeY.setPrefHeight(31);
 
         btnLaunch = new Button();
         btnLaunch.setLayoutY(22);
         btnLaunch.setLayoutX(209);
         btnLaunch.setPrefHeight(31);
         btnLaunch.setPrefWidth(65);
+        btnLaunch.setOnAction(event -> launch());
         btnLaunch.setText("Launch rocket");
 
         lblPlayerOne = new Label();
@@ -275,7 +286,7 @@ public class RMIGameClient
         lblTimer.setPrefWidth(200);
         lblTimer.setPrefHeight(21);
 
-        gameScreen.getChildren().addAll(tfTileCode,btnLaunch,lblPlayerOne,lblPlayerTwo,lblTimer);
+        gameScreen.getChildren().addAll(tfTileCodeX,tfTileCodeY,btnLaunch,lblPlayerOne,lblPlayerTwo,lblTimer);
 
         gameScene = new Scene(gameScreen);
         gameStage = new Stage();
@@ -292,9 +303,10 @@ public class RMIGameClient
                 {
                     lblPlayerOne.setText(game.getPlayerOne().getUsername());
                     lblPlayerTwo.setText(game.getPlayerTwo().getUsername());
-                    game.setPlayerTurn();
-                    setTiles(game.getTilesPlayerOne(),game.getPlayerOne().getUsername());
-                    setTiles(game.getTilesPlayerTwo(),game.getPlayerTwo().getUsername());
+
+                    setTiles(game.getTilesPlayerOne(),game.getPlayerOne().getUsername(),true);
+                    setTiles(game.getTilesPlayerTwo(),game.getPlayerTwo().getUsername(),false);
+                    setLabelsGame();
                     lobbyStage.close();
                     gameStage.show();
                     gameStage.toFront();
@@ -324,18 +336,75 @@ public class RMIGameClient
         }
     }
 
-    public void setTiles(ArrayList<Tile> tiles, String username){
+    private void setLabelsGame(){
+
+        for (int i = 1; i < 11; i++){
+            //labels x- as player one
+            int playerOneX = 30 +(32 *i);
+            Label labelX1 = new Label();
+            labelX1.setLayoutY(233);
+            labelX1.setLayoutX(playerOneX);
+            labelX1.setPrefWidth(20);
+            labelX1.setPrefHeight(20);
+            labelX1.setText(String.valueOf(i));
+
+            //labels y- as player one
+            int playerOneY = 233 +(32 *i);
+            Label labelY1 = new Label();
+            labelY1.setLayoutY(playerOneY);
+            labelY1.setLayoutX(14);
+            labelY1.setPrefWidth(20);
+            labelY1.setPrefHeight(20);
+            labelY1.setText(String.valueOf(i));
+
+            //labels x- as player two
+            int playerTwoX = 484 +(32 *i);
+            Label labelX2 = new Label();
+            labelX2.setLayoutY(233);
+            labelX2.setLayoutX(playerTwoX);
+            labelX2.setPrefWidth(20);
+            labelX2.setPrefHeight(20);
+            labelX2.setText(String.valueOf(i));
+
+            //labels y- as player two
+            int playerTwoY = 233 +(32 *i);
+            Label labelY2 = new Label();
+            labelY2.setLayoutY(playerTwoY);
+            labelY2.setLayoutX(484);
+            labelY2.setPrefWidth(20);
+            labelY2.setPrefHeight(20);
+            labelY2.setText(String.valueOf(i));
+
+            gameScreen.getChildren().addAll(labelX1,labelX2,labelY1,labelY2);
+        }
+
+    }
+
+    public void setTiles(ArrayList<Tile> tiles, String username, boolean playerOne){
+
         Platform.runLater(new Runnable()
         {
             @Override
             public void run()
             {
+                imageViewsPlayerOne = new ArrayList<>();
+                imageViewsPlayerTwo = new ArrayList<>();
+
                 for(Tile tile: tiles){
                     javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView();
                     imageView.setFitWidth(30);
                     imageView.setFitHeight(30);
                     imageView.setLayoutX(tile.getLayoutX());
                     imageView.setLayoutY(tile.getLayoutY());
+                    imageView.setId(tile.getX() + ";" + tile.getY());
+                    if (playerOne)
+                    {
+                        imageViewsPlayerOne.add(imageView);
+                    }
+
+                    else {
+                        imageViewsPlayerTwo.add(imageView);
+                    }
 
                     if(tile.getStatus() == TileStatus.SHIP){
                         if(user.getUsername().equals(username))
@@ -346,10 +415,6 @@ public class RMIGameClient
                             imageView.setImage(new Image("assets/water.jpg"));
                         }
                     }
-                    if(tile.getStatus() == TileStatus.HIT){
-
-                    }
-                    if()
 
                     else {
                         imageView.setImage(new Image("assets/water.jpg"));
@@ -369,6 +434,22 @@ public class RMIGameClient
                 }
             }
         });
+    }
+
+    public void setTileHitMis(Move move){
+        if(move.getPlayerOne()){
+            for(javafx.scene.image.ImageView imageView : imageViewsPlayerTwo){
+                System.out.println(imageView.getId()+move.getTileID());
+                if(imageView.getId().equals(move.getTileID())){
+                    if(move.getStatus() == TileStatus.HIT){
+                        imageView.setImage(new Image("assets/hit.jpg"));
+                    }
+                    else {
+                        imageView.setImage(new Image("assets/mis.jpg"));
+                    }
+                }
+            }
+        }
     }
 
     private void acceptInvitation(Invitation invitation){
@@ -415,13 +496,24 @@ public class RMIGameClient
 
     public void setLstInvitations(ObservableList<Invitation> invitations){
         lstInvitations.getItems().clear();
-        //ObservableList<Invitation> invitations = ;
 
         for (Invitation i:invitations)
         {
                 if(this.user.getUsername().equals(i.getReceiver().getUsername())){
                     lstInvitations.getItems().add(i);
                 }
+        }
+    }
+
+    private void launch(){
+        try
+        {
+            game.launch(Integer.valueOf(tfTileCodeX.getText()),Integer.valueOf(tfTileCodeY.getText()));
+        }
+
+        catch (RemoteException e)
+        {
+            System.out.println("GameClient: RemoteException: " + e.getMessage());
         }
     }
 

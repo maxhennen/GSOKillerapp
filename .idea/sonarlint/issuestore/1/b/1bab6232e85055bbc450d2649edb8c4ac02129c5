@@ -1,0 +1,16 @@
+
+Dsquid:S1948"/Make "publisherGame" transient or serializable.(ÒãŽ®
+Ssquid:S1155">Use isEmpty() to check whether the collection is empty or not.(Î÷ç­
+Esquid:S1948"0Make "publisherLobby" transient or serializable.(¨½Ž„
+M
+squid:S106"9Replace this use of System.out or System.err by a logger.(Å˜Àÿ
+lsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(ÔÖØ^
+esquid:S1192"KDefine a constant instead of duplicating this literal "invitation" 3 times.(ø¡¹›ÿÿÿÿÿ
+_squid:UselessImportCheck"=Remove this unused import 'javafx.collections.FXCollections'.(´¶²Æ
+esquid:UselessImportCheck">Remove this unused import 'javafx.collections.ObservableList'.(ÄÜ€éüÿÿÿÿ
+jsquid:UselessImportCheck"HRemove this unused import 'fontyspublisher.IRemotePublisherForListener'.(¤º‚È
+£%squid:RedundantThrowsDeclarationCheck"tRemove the declaration of thrown exception 'java.util.ConcurrentModificationException' which is a runtime exception.(¿š´ó
+^squid:UselessImportCheck"<Remove this unused import 'fontyspublisher.RemotePublisher'.(„Ü©Š
+\squid:UselessImportCheck"5Remove this unused import 'GameServer.RMIGameClient'.(£¤…—ûÿÿÿÿ
+Csquid:S1068")Remove this unused "games" private field.(Ä·úýÿÿÿÿ
+Esquid:S2160"+Override the "equals" method in this class.(ºÅó©ýÿÿÿÿ
