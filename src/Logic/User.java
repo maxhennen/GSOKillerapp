@@ -14,29 +14,12 @@ import java.util.List;
 public class User implements Serializable
 {
     private String username;
-    private int ID;
-    private List<Invitation> invitations;
 
-    public User(String username, int id) throws RemoteException{
+    public User(String username) throws RemoteException{
         this.username = username;
-        this.ID = id;
-        invitations = new ArrayList<>();
     }
 
     public String getUsername(){return username;}
-
-    public int getID(){return ID;}
-
-    public void placeShip(){
-
-    }
-
-
-    public boolean guessShip(){
-        return false;
-    }
-
-
 
     @Override
     public String toString(){

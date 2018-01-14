@@ -4,16 +4,6 @@
  */
 package GameServer;
 
-import CentraleServer.DatabasePersistentie;
-import CentraleServer.DatabaseRepository;
-import Interfaces.IData;
-import Interfaces.IGame;
-import Interfaces.IServerReference;
-import Logic.Game;
-import Logic.Lobby;
-import com.sun.jmx.remote.internal.RMIExporter;
-import fontyspublisher.IRemotePublisherForDomain;
-import fontyspublisher.Publisher;
 import fontyspublisher.RemotePublisher;
 import javafx.application.Application;
 import javafx.stage.Stage;

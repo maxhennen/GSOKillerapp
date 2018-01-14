@@ -1,8 +1,0 @@
-
-Dsquid:S1948"(Make "client" transient or serializable.(ÁÅíã8ßµä¤,
-Esquid:S2160"+Override the "equals" method in this class.(«­áÃşÿÿÿÿ
-Bsquid:S1604"(Make this anonymous inner class a lambda(Ÿ©Ã›ûÿÿÿÿ
-Bsquid:S1068"(Remove this unused "user" private field.(’Ø¾ıÿÿÿÿ
-`squid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(ïñ†Ô
-N"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(ïñ†Ô
-msquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(‚—ÚÊ

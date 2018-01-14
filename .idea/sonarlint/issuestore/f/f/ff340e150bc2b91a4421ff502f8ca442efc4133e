@@ -1,4 +1,0 @@
-
-\squid:UselessImportCheck"5Remove this unused import 'java.rmi.RemoteException'.(ДчаЌяяяяя
-lsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(ФЦШ^
-gsquid:UselessImportCheck"@Remove this unused import 'java.rmi.server.UnicastRemoteObject'.(кЏЬџыяяяя

@@ -4,10 +4,7 @@
  */
 package CentraleServer;
 
-import Interfaces.IData;
 import Interfaces.IServerReference;
-import Logic.Battleship;
-import Logic.Lobby;
 import Logic.User;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -34,7 +31,7 @@ public class CentraleRMIServer extends Application{
 
     // References to registry and student administration
     private Registry registry = null;
-    private DatabaseRepository data = null;
+    private Battleship battleship = null;
 
     //RMIGameserver
     private static final String bindingNameGameserver = "reference";
@@ -44,7 +41,7 @@ public class CentraleRMIServer extends Application{
     // Constructor
     public CentraleRMIServer() throws RemoteException {
 
-        data = new DatabaseRepository(new DatabasePersistentie(), this);
+        battleship = new Battleship(new DatabasePersistentie(),this);
 
         // Create registry at port number
         try {
@@ -59,7 +56,7 @@ public class CentraleRMIServer extends Application{
 
         // Bind beurs using registry
         try {
-            registry.rebind(bindingNameData, (IData) data);
+            registry.rebind(bindingNameData, battleship);
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot bind data");
             System.out.println("Server: RemoteException: " + ex.getMessage());

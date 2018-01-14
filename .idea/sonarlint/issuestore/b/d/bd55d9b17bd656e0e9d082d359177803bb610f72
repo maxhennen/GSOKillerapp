@@ -1,95 +1,0 @@
-
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(®‘›Úùÿÿÿÿ
-ssquid:S1450"YRemove the "lobbySreen" field and declare it as a local variable in the relevant methods.(Â£ôÿÿÿÿÿ
-Osquid:S1141"5Extract this nested try block into a separate method.(ç£êúÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(òº„äúÿÿÿÿ
-psquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(¡Ûá­
-nsquid:S1450"YRemove the "lblPlayers" field and declare it as a local variable in the relevant methods.(íÂïŠ
-asquid:UselessImportCheck"?Remove this unused import 'javafx.scene.layout.RowConstraints'.(ìÕÔ©
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Øñ‘Šûÿÿÿÿ
-msquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(Íï°
-Bsquid:S1604"(Make this anonymous inner class a lambda(Ÿ©Ã›ûÿÿÿÿ
-Gsquid:S1068"-Remove this unused "gameAdmin" private field.(’ŸÌûÿÿÿÿ
-]squid:UselessImportCheck";Remove this unused import 'java.beans.PropertyChangeEvent'.(’¢œ§
-^squid:UselessImportCheck"<Remove this unused import 'jdk.nashorn.internal.scripts.JO'.(—Á´Š
-L
-squid:S106"9Replace this use of System.out or System.err by a logger.(ßªÅI
-nsquid:S1450"YRemove the "lobbyScene" field and declare it as a local variable in the relevant methods.(Ã«‰ÿ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(…ÑÜ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ
-ksquid:UselessImportCheck"DRemove this unused import 'fontyspublisher.IRemotePropertyListener'.(ŠŸÜùÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(®‘›Úùÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-L
-squid:S106"9Replace this use of System.out or System.err by a logger.(ıÃÈ
-L
-squid:S106"9Replace this use of System.out or System.err by a logger.(ıÃÈ
-‘squid:S1319"pThe type of the "tiles" object should be an interface such as "List" rather than the implementation "ArrayList".(®ğİøÿÿÿÿ8ìÃš£,
-wsquid:S1192"]Define a constant instead of duplicating this literal "GameClient: Cannot bind game" 3 times.(ÜŒêäüÿÿÿÿ
-Ysquid:UselessImportCheck"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8×Ğ”£,
-hsquid:UselessImportCheck"FRemove this unused import 'fontyspublisher.IRemotePublisherForDomain'.(•©Çê
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ
-Y
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ8šò¤,
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ
-rsquid:S1192"^Define a constant instead of duplicating this literal "GameClient: Cannot bind lobby" 3 times.(ıÃÈ
-nsquid:S1450"YRemove the "btnDecline" field and declare it as a local variable in the relevant methods.(‚ù¸Æ
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(¥º‰¤øÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(…ÑÜ
-msquid:S1450"XRemove the "btnAccept" field and declare it as a local variable in the relevant methods.(Í¯°µ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(Í‹ÌÔúÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(ÜŒêäüÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(£¡Šùÿÿÿÿ
-Y
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ8šò¤,
-_squid:UselessImportCheck"=Remove this unused import 'javafx.collections.FXCollections'.(´¶²Æ
-dsquid:UselessImportCheck"=Remove this unused import 'java.util.NoSuchElementException'.(®“ÿéúÿÿÿÿ
-`squid:UselessImportCheck"9Remove this unused import 'javafx.scene.layout.GridPane'.(ÖÀ¹¯ûÿÿÿÿ
-Xsquid:UselessImportCheck"1Remove this unused import 'java.io.Serializable'.(èãîÂÿÿÿÿÿ
-Y
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ8šò¤,
-msquid:S1450"XRemove the "gameScene" field and declare it as a local variable in the relevant methods.(øÜ›Í
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(ÜŒêäüÿÿÿÿ
-wsquid:S1450"]Remove the "lblInvitations" field and declare it as a local variable in the relevant methods.(¥¢é³ıÿÿÿÿ
-T
-squid:S106"9Replace this use of System.out or System.err by a logger.(×’â¤8€ÌŸ§,
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(¦´Ô
-psquid:S1450"VRemove the "btnSend" field and declare it as a local variable in the relevant methods.(¡¼‚Âûÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(ÜŒêäüÿÿÿÿ
-lsquid:S3776"RRefactor this method to reduce its Cognitive Complexity from 21 to the 15 allowed.(®ğİøÿÿÿÿ
-dsquid:UselessImportCheck"<Remove this unused import 'javax.swing.text.html.ImageView'.(Ÿ€8‹é¾£,
-dsquid:UselessImportCheck"BRemove this unused import 'javafx.scene.layout.ColumnConstraints'.(Ñî²ı
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(çÔ¸£
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çéğËşÿÿÿÿ
-Y
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ8šò¤,
-ysquid:S1192"_Define a constant instead of duplicating this literal "GameClient: RemoteException: " 11 times.(‘îÇÂıÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(£¡Šùÿÿÿÿ
-gsquid:UselessImportCheck"@Remove this unused import 'java.rmi.server.UnicastRemoteObject'.(êÜŸûÿÿÿÿ
-Hsquid:S1068".Remove this unused "lobbyAdmin" private field.(é¦Ìòÿÿÿÿÿ
-Y
-squid:S106"9Replace this use of System.out or System.err by a logger.(‘îÇÂıÿÿÿÿ8šò¤,
-L
-squid:S106"9Replace this use of System.out or System.err by a logger.(ıÃÈ

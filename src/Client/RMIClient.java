@@ -1,9 +1,8 @@
 package Client;
 
 import GameServer.RMIGameClient;
-import Interfaces.IData;
-import Logic.Battleship;
-import com.sun.mail.iap.ConnectionException;
+import Interfaces.IBattleship;
+import Logic.User;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,10 +17,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 /**
@@ -30,6 +32,8 @@ import java.util.Properties;
 public class RMIClient extends Application
 {
     private Stage stage;
+
+    private User user;
 
     //Panes
     private AnchorPane loginScreen;
@@ -61,8 +65,7 @@ public class RMIClient extends Application
     private static final String bindingNameCentraleserver = "data";
 
     private Registry registry = null;
-    private IData data = null;
-    private Battleship battleship = null;
+    private IBattleship battleship = null;
     private RMIGameClient gameClient = null;
 
 
@@ -79,9 +82,8 @@ public class RMIClient extends Application
 
         if (registry != null){
             try{
-                data = (IData) registry.lookup(bindingNameCentraleserver);
+                battleship = (IBattleship) registry.lookup(bindingNameCentraleserver);
                 System.out.println("Client: lookup");
-                battleship = new Battleship(this);
             }
             catch (RemoteException ex){
                 System.out.println("Client: RemoteException: " + ex.getMessage());
@@ -92,7 +94,7 @@ public class RMIClient extends Application
         }
     }
 
-    public IData getData(){return data;}
+    public IBattleship getData(){return battleship;}
 
 
     @Override
@@ -230,25 +232,40 @@ public class RMIClient extends Application
     private void login(){
         try
         {
-            battleship.login(tfLoginName.getText(), tfLoginPassword.getText());
-            if(battleship.getUser() != null){
-                stage.setTitle("Choose gamemodus");
-                stage.setScene(chooseModeScene);
-            }
-        } catch (ConnectionException e)
+            this.user = battleship.login(MD5Hash(tfLoginName.getText()), MD5Hash(tfLoginPassword.getText()));
+        } catch (RemoteException e)
         {
-            System.out.println("Client: ConnectionException: " + e.getMessage());
-            JOptionPane.showMessageDialog(null,"Connection lost with server!");
+            System.out.println("Client: RemoteException: " + e.getMessage());
+        }
+
+        if(this.user != null){
+            stage.setTitle("Choose gamemodus");
+            stage.setScene(chooseModeScene);
+        }
+        else{
+            JOptionPane.showMessageDialog(null,"Email/ password are not correct. Try again.");
         }
     }
 
     private void register(){
         try
         {
-            battleship.register(tfRegisterName.getText(),tfRegisterEmail.getText(),tfRegisterPassword.getText(),tfRegisterConfirm.getText());
-        } catch (ConnectionException e)
+            if (tfRegisterPassword.getText().length() >= 6)
+            {
+                if (tfRegisterPassword.getText().equals(tfRegisterConfirm.getText()))
+                {
+                    battleship.register(tfRegisterName.getText(),MD5Hash(tfRegisterEmail.getText()),MD5Hash(tfRegisterPassword.getText()));
+                }
+                else {
+                    JOptionPane.showMessageDialog(null,"Passwordfields don't match!");
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(null,"Password is to short!");
+            }
+        } catch (RemoteException e)
         {
-            System.out.println("Client: ConnectionException: " + e.getMessage());
+            System.out.println("Client: RemoteException: " + e.getMessage());
             JOptionPane.showMessageDialog(null,"Connection lost with server!");
         }
     }
@@ -259,8 +276,8 @@ public class RMIClient extends Application
             Properties properties = getProperties();
             String ip = properties.getProperty("ipAddress");
             stage.close();
-            gameClient = new RMIGameClient(ip,1101,1102, battleship);
-            data.connectWithGameserver(battleship.getUser());
+            gameClient = new RMIGameClient(ip,1101,1102, this.user);
+            battleship.connectWithGameserver(this.user);
             System.out.println("Client: Connected with gameserver");
         }
         catch (RemoteException e){
@@ -289,5 +306,16 @@ public class RMIClient extends Application
     public void stop() throws RemoteException {
 
     }
-}
 
+    public String MD5Hash(String hash){
+        try {
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            m.update(hash.getBytes(), 0, hash.length());
+            return new BigInteger(1,m.digest()).toString(16);
+        }
+        catch (NoSuchAlgorithmException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+}

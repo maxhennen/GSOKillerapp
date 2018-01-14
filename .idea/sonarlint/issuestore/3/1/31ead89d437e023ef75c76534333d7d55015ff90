@@ -1,14 +1,0 @@
-
-fsquid:UselessImportCheck"=Remove this unused import 'javafx.collections.FXCollections'.(´¶²Æ8Öˆ¤,
-Dsquid:S1948"(Make "client" transient or serializable.(ÁÅíã8ßµä¤,
-Esquid:S2160"+Override the "equals" method in this class.(ÚÖ†›şÿÿÿÿ
-Psquid:UselessImportCheck"'Remove this unused import 'Logic.Tile'.(³¯«»8Öˆ¤,
-msquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(‚—ÚÊ
-Bsquid:S1604"(Make this anonymous inner class a lambda(Ÿ©Ã›ûÿÿÿÿ
-N"squid:SwitchLastCaseIsDefaultCheck""Add a default case to this switch.(ïñ†Ô
-`squid:S1301"KReplace this "switch" statement by "if" statements to increase readability.(ïñ†Ô
-T
-squid:S106"9Replace this use of System.out or System.err by a logger.(ïê—8Š¨ÿ¦,
->squid:S1172"*Remove this unused method parameter "evt".(ó€
-Usquid:UselessImportCheck"'Remove this unused import 'Logic.User'.(¾‘”øøÿÿÿÿ8Öˆ¤,
-\squid:UselessImportCheck".Remove this unused import 'java.util.HashMap'.(™˜”€ùÿÿÿÿ8Öˆ¤,

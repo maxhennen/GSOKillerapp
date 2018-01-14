@@ -1,8 +1,7 @@
 package Logic;
 
 
-import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
+import Enums.TileStatus;
 
 import java.io.Serializable;
 

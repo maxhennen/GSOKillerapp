@@ -1,5 +1,0 @@
-
-Jsquid:S1191"5Use classes from the Java API instead of Sun classes.(÷—•–
-dsquid:UselessImportCheck"BRemove this unused import 'com.sun.org.apache.regexp.internal.RE'.(÷—•–
-Isquid:UselessImportCheck"'Remove this unused import 'Logic.Game'.(´þ€Ë
-rsquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(²¹’„øÿÿÿÿ

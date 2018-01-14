@@ -1,72 +1,0 @@
-
-psquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(¡Ûá­
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(±«ùíüÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(±«ùíüÿÿÿÿ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(ïªÐ—
-psquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(³ÀÊž
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(¹ê²Ð
-isquid:S2259"OA "NullPointerException" could be thrown; "registryReference" is nullable here.(Ã–ïôøÿÿÿÿ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(ÔÉ¾
-msquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(Íï°
-]squid:UselessImportCheck"6Remove this unused import 'fontyspublisher.Publisher'.(ÙŸÛœûÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(±«ùíüÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(±«ùíüÿÿÿÿ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(„Çí–
-Osquid:S1191"5Use classes from the Java API instead of Sun classes.(®ˆÁ¹þÿÿÿÿ
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(–·‹Õüÿÿÿÿ
-Zsquid:UselessImportCheck"8Remove this unused import 'Interfaces.IServerReference'.(þÒìÝ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(õÏ‹…
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(æ’æ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(ò“Ä”ýÿÿÿÿ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(ïªÐ—
-bsquid:UselessImportCheck"@Remove this unused import 'CentraleServer.DatabasePersistentie'.(×¤Ê²
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(±«ùíüÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(âÉÐÞÿÿÿÿÿ
-ksquid:UselessImportCheck"DRemove this unused import 'com.sun.jmx.remote.internal.RMIExporter'.(®ˆÁ¹þÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(‹ù·Óúÿÿÿÿ
-hsquid:UselessImportCheck"FRemove this unused import 'fontyspublisher.IRemotePublisherForDomain'.(•©Çê
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(„¬Ü†
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(È’¯£
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(Úè£Äüÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(Ê®›Ãùÿÿÿÿ
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(±«ùíüÿÿÿÿ
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(çéðËþÿÿÿÿ
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(ò¼¤âûÿÿÿÿ
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(Øñ‘Šûÿÿÿÿ
-xsquid:S1192"^Define a constant instead of duplicating this literal "GameServer: RemoteException: " 7 times.(±«ùíüÿÿÿÿ
-usquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(¥º‰¤øÿÿÿÿ
-msquid:S1450"SRemove the "game" field and declare it as a local variable in the relevant methods.(­Ñ¿öúÿÿÿÿ
-Tsquid:UselessImportCheck"-Remove this unused import 'Interfaces.IGame'.(Ñ¡Ä±ùÿÿÿÿ
-–squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(¯ŠÏÌ
-esquid:UselessImportCheck">Remove this unused import 'CentraleServer.DatabaseRepository'.(çêÞíùÿÿÿÿ
-osquid:S00115"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(£…•8
-Tsquid:UselessImportCheck"-Remove this unused import 'Interfaces.IData'.(ÄðíÌþÿÿÿÿ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(ïËØ›
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(ë„ù¿
-zsquid:S1450"`Remove the "registryReference" field and declare it as a local variable in the relevant methods.(õ·¤‡ýÿÿÿÿ
-M
-squid:S106"9Replace this use of System.out or System.err by a logger.(»‰Åú
-R
-squid:S106"9Replace this use of System.out or System.err by a logger.(±«ùíüÿÿÿÿ

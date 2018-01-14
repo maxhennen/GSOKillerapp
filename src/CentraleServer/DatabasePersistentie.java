@@ -1,11 +1,8 @@
 package CentraleServer;
 
-import Interfaces.IDatabaseReference;
 import Logic.User;
 
 import javax.swing.*;
-import java.io.Serializable;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
@@ -43,6 +40,7 @@ public class DatabasePersistentie extends UnicastRemoteObject implements IDataba
     @Override
     public User login(String email, String password)throws RemoteException
     {
+        System.out.println(email + "--" + password);
         User user = null;
         try
         {
@@ -54,7 +52,7 @@ public class DatabasePersistentie extends UnicastRemoteObject implements IDataba
             ResultSet results = prep.executeQuery();
 
             while (results.next()){
-                user = new User(results.getString("name"),results.getInt("id"));
+                user = new User(results.getString("name"));
             }
         }
         catch (SQLException e)

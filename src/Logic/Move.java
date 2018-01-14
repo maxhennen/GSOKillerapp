@@ -1,5 +1,7 @@
 package Logic;
 
+import Enums.TileStatus;
+
 import java.io.Serializable;
 
 /**

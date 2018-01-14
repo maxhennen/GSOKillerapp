@@ -61,7 +61,6 @@ public class GameAdmin extends UnicastRemoteObject implements IRemotePropertyLis
 
     private void launch(PropertyChangeEvent evt){
         ArrayList<Move> moves = (ArrayList<Move>) evt.getNewValue();
-        System.out.println("checkkkk");
         client.setTileHitMis(moves.get(0));
     }
 }

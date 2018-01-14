@@ -2,43 +2,29 @@ package GameServer;
 
 import Administration.GameAdmin;
 import Administration.LobbyAdmin;
+import Client.RMIClient;
+import Enums.TileStatus;
 import Interfaces.IGame;
 import Interfaces.ILobby;
 import Logic.*;
-import fontyspublisher.IRemotePropertyListener;
-import fontyspublisher.IRemotePublisherForDomain;
 import fontyspublisher.IRemotePublisherForListener;
-import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.image.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
-import jdk.nashorn.internal.scripts.JO;
 
 import javax.swing.*;
-import javax.swing.text.html.ImageView;
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * Created by maxhe on 20-12-2017.
@@ -72,6 +58,7 @@ public class RMIGameClient
     private ListView lstInvitations;
     private Button btnAccept;
     private Button btnDecline;
+    private Button btnLogout;
 
     // Nodes gamescreen
     private AnchorPane gameScreen;
@@ -86,8 +73,8 @@ public class RMIGameClient
     private ArrayList<javafx.scene.image.ImageView> imageViewsPlayerOne;
     private ArrayList<javafx.scene.image.ImageView> imageViewsPlayerTwo;
 
-    public RMIGameClient(String ipAddress, int portNrLobby,int portNrGame, Battleship battleship)throws RemoteException{
-        this.user = battleship.getUser();
+    public RMIGameClient(String ipAddress, int portNrLobby,int portNrGame, User user)throws RemoteException{
+        this.user = user;
         setUpControls();
         createGameClientLobby(ipAddress,portNrLobby);
         createGameClientGame(ipAddress,portNrGame);
@@ -234,7 +221,15 @@ public class RMIGameClient
         btnDecline.setOnAction(event -> declineInvitation((Invitation) lstInvitations.getSelectionModel().getSelectedItem()));
         btnDecline.setText("Decline Invitation");
 
-        lobbySreen.getChildren().addAll(lblPlayers,lblInvitations,lstInvitations,lstPlayers,btnAccept,btnDecline,btnSend);
+        btnLogout = new Button();
+        btnLogout.setLayoutX(350);
+        btnLogout.setLayoutY(20);
+        btnLogout.setPrefWidth(200);
+        btnLogout.setPrefHeight(31);
+        btnLogout.setText("Logout");
+        btnLogout.setOnAction(event -> logout());
+
+        lobbySreen.getChildren().addAll(lblPlayers,lblInvitations,lstInvitations,lstPlayers,btnAccept,btnDecline,btnSend,btnLogout);
 
         lobbyScene = new Scene(lobbySreen,600,400);
         lobbyStage.setTitle("Lobby");
@@ -251,13 +246,13 @@ public class RMIGameClient
         tfTileCodeX = new TextField();
         tfTileCodeX.setLayoutY(22);
         tfTileCodeX.setLayoutX(14);
-        tfTileCodeX.setPrefWidth(15);
+        tfTileCodeX.setPrefWidth(35);
         tfTileCodeX.setPrefHeight(31);
 
         tfTileCodeY = new TextField();
         tfTileCodeY.setLayoutY(22);
-        tfTileCodeY.setLayoutX(40);
-        tfTileCodeY.setPrefWidth(15);
+        tfTileCodeY.setLayoutX(60);
+        tfTileCodeY.setPrefWidth(35);
         tfTileCodeY.setPrefHeight(31);
 
         btnLaunch = new Button();
@@ -304,27 +299,17 @@ public class RMIGameClient
                     lblPlayerOne.setText(game.getPlayerOne().getUsername());
                     lblPlayerTwo.setText(game.getPlayerTwo().getUsername());
 
+                    imageViewsPlayerOne = new ArrayList<>();
+                    imageViewsPlayerTwo = new ArrayList<>();
+
                     setTiles(game.getTilesPlayerOne(),game.getPlayerOne().getUsername(),true);
                     setTiles(game.getTilesPlayerTwo(),game.getPlayerTwo().getUsername(),false);
+
                     setLabelsGame();
+
                     lobbyStage.close();
                     gameStage.show();
                     gameStage.toFront();
-                    AnimationTimer animationTimer = new AnimationTimer()
-                    {
-                        @Override
-                        public void handle(long now)
-                        {
-                            try
-                            {
-                                lblTimer.setText(String.valueOf(game.getTimer()));
-                            } catch (RemoteException e)
-                            {
-                                System.out.println("GameClient: RemoteException: " + e.getMessage());
-                            }
-                        }
-                    };
-                    animationTimer.start();
                 } catch (RemoteException e)
                 {
                     System.out.println("GameClient: RemoteException: " + e.getMessage());
@@ -387,8 +372,6 @@ public class RMIGameClient
             @Override
             public void run()
             {
-                imageViewsPlayerOne = new ArrayList<>();
-                imageViewsPlayerTwo = new ArrayList<>();
 
                 for(Tile tile: tiles){
                     javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView();
@@ -420,15 +403,7 @@ public class RMIGameClient
                         imageView.setImage(new Image("assets/water.jpg"));
                     }
 
-                    try
-                    {
-                        if(!user.getUsername().equals(game.getPlayerTurn().getUsername())){
-                            btnLaunch.setDisable(true);
-                        }
-                    } catch (RemoteException e)
-                    {
-                        System.out.println("GameClient: RemoteException: " + e.getMessage());
-                    }
+                    setBtnLaunch();
 
                     gameScreen.getChildren().add(imageView);
                 }
@@ -436,17 +411,67 @@ public class RMIGameClient
         });
     }
 
+    private void setBtnLaunch(){
+        try
+        {
+            if(!this.user.getUsername().equals(game.getPlayerTurn().getUsername())){
+                btnLaunch.setDisable(true);
+            }
+            else {
+                btnLaunch.setDisable(false);
+            }
+        } catch (RemoteException e)
+        {
+            System.out.println("GameClient: RemoteException: " + e.getMessage() );
+        }
+    }
+
     public void setTileHitMis(Move move){
+
         if(move.getPlayerOne()){
-            for(javafx.scene.image.ImageView imageView : imageViewsPlayerTwo){
-                System.out.println(imageView.getId()+move.getTileID());
-                if(imageView.getId().equals(move.getTileID())){
-                    if(move.getStatus() == TileStatus.HIT){
-                        imageView.setImage(new Image("assets/hit.jpg"));
-                    }
-                    else {
-                        imageView.setImage(new Image("assets/mis.jpg"));
-                    }
+            loopImageViews(imageViewsPlayerTwo,move);
+        }
+        else{
+            loopImageViews(imageViewsPlayerOne,move);
+        }
+
+        setBtnLaunch();
+        endGame();
+    }
+
+    private void endGame(){
+        try
+        {
+            if(game.checkEndGame()){
+                if(game.getPlayerTurn().getUsername().equals(this.user.getUsername())){
+                    JOptionPane.showMessageDialog(null,"Congratulations u have won the game!");
+                }
+                else {
+                    JOptionPane.showMessageDialog(null,"Unfortunately u have lost the game!");
+                }
+
+                lobby.goBackToLobbyAfterGame(this.user);
+                gameStage.close();
+                lobbyStage.show();
+                lobbyStage.toFront();
+            }
+
+
+        } catch (RemoteException e)
+        {
+            System.out.println("GameClient: RemoteException: " + e.getMessage());
+        }
+    }
+
+    private void loopImageViews(ArrayList<javafx.scene.image.ImageView> views, Move move){
+
+        for(javafx.scene.image.ImageView imageView : views){
+            if(imageView.getId().equals(move.getTileID())){
+                if(move.getStatus() == TileStatus.HIT){
+                    imageView.setImage(new Image("assets/hit.jpg"));
+                }
+                else{
+                    imageView.setImage(new Image("assets/mis.jpg"));
                 }
             }
         }
@@ -506,14 +531,52 @@ public class RMIGameClient
     }
 
     private void launch(){
+
+        int x = 0;
+        int y = 0;
+
         try
         {
-            game.launch(Integer.valueOf(tfTileCodeX.getText()),Integer.valueOf(tfTileCodeY.getText()));
+            x = Integer.valueOf(tfTileCodeX.getText());
+            y = Integer.valueOf(tfTileCodeY.getText()) - 1;
+        } catch (NumberFormatException e)
+        {
+            JOptionPane.showMessageDialog(null,"Only insert numbers, please!");
+            System.out.println("GameClient: NumberFormatException: " + e.getMessage());
+        }
+
+        try
+        {
+            if(x > 0 && 10 >= x && y > 0 && 10 >= y){
+                game.launch(x,y);
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"x and y values must between 1 and 10");
+            }
         }
 
         catch (RemoteException e)
         {
             System.out.println("GameClient: RemoteException: " + e.getMessage());
+        }
+    }
+
+    private void logout(){
+        try
+        {
+            lobby.logout(this.user);
+        } catch (RemoteException e)
+        {
+            System.out.println("GameClient: RemoteException: " + e.getMessage());
+        }
+        RMIClient client = new RMIClient();
+        try
+        {
+            lobbyStage.close();
+            client.start(new Stage());
+        } catch (RemoteException e)
+        {
+            e.printStackTrace();
         }
     }
 
