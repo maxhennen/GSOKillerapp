@@ -1,6 +1,5 @@
 package Interfaces;
 
-import Client.RMIClient;
 import Logic.User;
 
 import java.rmi.Remote;

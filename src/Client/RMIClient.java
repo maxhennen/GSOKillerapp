@@ -24,6 +24,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
@@ -55,13 +56,13 @@ public class RMIClient extends Application
     private PasswordField tfRegisterConfirm;
     private Button btnRegister;
 
-    //Nodes chooosemodescreen
+    //Nodes choosemodescreen
     private Button btnnormalModus;
     private Button btnbigModus;
     private Button btnsmallModus;
     private Label lblChooseModus;
 
-    //RMICentraleServer
+    //RMICentralServer
     private static final String bindingNameCentraleserver = "data";
 
     private Registry registry = null;
@@ -89,7 +90,7 @@ public class RMIClient extends Application
                 System.out.println("Client: RemoteException: " + ex.getMessage());
             }
             catch (NotBoundException ex){
-                System.out.println("Client: No beurs binded to registry." + ex.getMessage());
+                System.out.println("Client: No battleship binded to registry." + ex.getMessage());
             }
         }
     }
@@ -255,6 +256,7 @@ public class RMIClient extends Application
                 if (tfRegisterPassword.getText().equals(tfRegisterConfirm.getText()))
                 {
                     battleship.register(tfRegisterName.getText(),MD5Hash(tfRegisterEmail.getText()),MD5Hash(tfRegisterPassword.getText()));
+                    JOptionPane.showMessageDialog(null,"You're registrated!\n You can now login!");
                 }
                 else {
                     JOptionPane.showMessageDialog(null,"Passwordfields don't match!");
@@ -267,6 +269,10 @@ public class RMIClient extends Application
         {
             System.out.println("Client: RemoteException: " + e.getMessage());
             JOptionPane.showMessageDialog(null,"Connection lost with server!");
+        }
+        catch (SQLException e){
+            System.out.println("Client: SQLException: " + e.getMessage());
+            JOptionPane.showMessageDialog(null,"Username or email is already in use");
         }
     }
 
@@ -285,7 +291,7 @@ public class RMIClient extends Application
         }
     }
 
-    public static Properties getProperties()
+    private static Properties getProperties()
     {
         Properties properties = new Properties();
 
@@ -307,7 +313,7 @@ public class RMIClient extends Application
 
     }
 
-    public String MD5Hash(String hash){
+    private String MD5Hash(String hash){
         try {
             MessageDigest m = MessageDigest.getInstance("MD5");
             m.update(hash.getBytes(), 0, hash.length());

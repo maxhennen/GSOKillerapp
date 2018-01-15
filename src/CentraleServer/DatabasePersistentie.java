@@ -73,7 +73,7 @@ public class DatabasePersistentie extends UnicastRemoteObject implements IDataba
     }
 
     @Override
-    public void register(String username, String email, String password)throws RemoteException
+    public void register(String username, String email, String password)throws RemoteException, SQLException
     {
         try{
             getConnection();
@@ -83,7 +83,6 @@ public class DatabasePersistentie extends UnicastRemoteObject implements IDataba
             prep.setString(2,email);
             prep.setString(3,password);
             prep.executeUpdate();
-            JOptionPane.showMessageDialog(null,"You're registrated. You can now login");
         }
         catch (SQLException e){
             System.out.println("Server: SQLException: " + e.getMessage());

@@ -8,6 +8,7 @@ import Interfaces.IServerReference;
 import Logic.User;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -21,7 +22,7 @@ import java.rmi.registry.Registry;
  *
  * @author Nico Kuijpers
  */
-public class CentraleRMIServer extends Application{
+public class CentralRMIServer extends Application{
 
     // Set port number
     private static final int portNumber = 1099;
@@ -39,7 +40,7 @@ public class CentraleRMIServer extends Application{
     private IServerReference lobby = null;
 
     // Constructor
-    public CentraleRMIServer() throws RemoteException {
+    public CentralRMIServer() throws RemoteException {
 
         battleship = new Battleship(new DatabasePersistentie(),this);
 
@@ -54,12 +55,16 @@ public class CentraleRMIServer extends Application{
             registry = null;
         }
 
-        // Bind beurs using registry
+        // Bind battleship using registry
         try {
             registry.rebind(bindingNameData, battleship);
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot bind data");
             System.out.println("Server: RemoteException: " + ex.getMessage());
+        }
+        catch (NullPointerException e){
+            System.out.println("Server: Cannot bind data");
+            System.out.println("Server: NullpointerException: " + e.getMessage());
         }
         printIPAddresses();
 
@@ -89,7 +94,10 @@ public class CentraleRMIServer extends Application{
                 System.out.println("Server: RemoteException: " + ex.getMessage());
             }
             catch (NotBoundException ex){
-                System.out.println("Server: No beurs binded to registry." + ex.getMessage());
+                System.out.println("Server: NotBoundException: " + ex.getMessage());
+            }
+            catch (NullPointerException e){
+                System.out.println("Server: NullpointerException: " + e.getMessage());
             }
         }
     }

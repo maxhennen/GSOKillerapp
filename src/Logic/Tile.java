@@ -10,8 +10,8 @@ import java.io.Serializable;
  */
 public class Tile implements Serializable
 {
-    private int layoutX;
-    private int layoutY;
+    private final int layoutX;
+    private final int layoutY;
     private int X;
     private int Y;
     private TileStatus status = TileStatus.WATER;

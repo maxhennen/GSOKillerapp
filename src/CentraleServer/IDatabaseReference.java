@@ -12,5 +12,5 @@ import java.sql.SQLException;
 public interface IDatabaseReference extends Remote
 {
     User login(String email, String password)throws RemoteException;
-    void register(String username, String email, String password)throws RemoteException;
+    void register(String username, String email, String password)throws RemoteException, SQLException;
 }

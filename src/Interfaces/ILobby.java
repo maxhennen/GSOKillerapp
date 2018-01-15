@@ -29,7 +29,7 @@ public interface ILobby extends Remote
      * Accepts the invitation and creates a new game
      * @param invitation the invitation that will be accepted
      * @param game the interface from game where we can create a game
-     * @throws RemoteException
+     * @throws RemoteException if there's a connection error
      */
     void acceptInvitation(Invitation invitation, IGame game) throws RemoteException;
 

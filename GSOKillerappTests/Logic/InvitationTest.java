@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class InvitationTest
 {
 
-    Invitation invitation = null;
+    private Invitation invitation = null;
 
     @Before
     public void before(){

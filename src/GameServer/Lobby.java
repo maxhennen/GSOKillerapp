@@ -1,6 +1,5 @@
 package GameServer;
 
-import GameServer.Game;
 import Interfaces.IGame;
 import Interfaces.ILobby;
 import Interfaces.IServerReference;
@@ -21,16 +20,14 @@ import java.util.List;
  */
 public class Lobby extends UnicastRemoteObject implements IServerReference, ILobby, Serializable
 {
-    private List<User> users;
-    private List<Invitation> invitations;
-    private List<Game> games;
+    private final List<User> users;
+    private final List<Invitation> invitations;
     private IRemotePublisherForDomain publisherLobby = null;
     private IRemotePublisherForDomain publisherGame = null;
 
     public Lobby(IRemotePublisherForDomain publisherLobby,IRemotePublisherForDomain publisherGame) throws RemoteException{
         users = new ArrayList<>();
         invitations = new ArrayList<>();
-        games = new ArrayList<>();
         this.publisherLobby = publisherLobby;
         this.publisherGame = publisherGame;
 

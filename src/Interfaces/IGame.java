@@ -1,6 +1,5 @@
 package Interfaces;
 
-import Logic.Ship;
 import Logic.Tile;
 import Logic.User;
 
@@ -31,7 +30,7 @@ public interface IGame extends Remote
     /**
      * Gives player two
      * @return player two
-     * @throws RemoteException
+     * @throws RemoteException if there's a connection error
      */
     User getPlayerTwo() throws RemoteException;
 
@@ -50,14 +49,14 @@ public interface IGame extends Remote
     ArrayList<Tile> getTilesPlayerTwo() throws RemoteException;
 
     /**
-     * Initialize randomly wich player can start and change the players turn after every move
+     * Initialize randomly which player can start and change the players turn after every move
      * @throws RemoteException if there's a problem with the connection
      */
     void setPlayerTurn() throws RemoteException;
 
     /**
-     * Gives back the player wich turn it is
-     * @return player one or player two depends on wich one has the turn
+     * Gives back the player which turn it is
+     * @return player one or player two depends on which one has the turn
      * @throws RemoteException if there's a problem with the connection
      */
     User getPlayerTurn() throws RemoteException;

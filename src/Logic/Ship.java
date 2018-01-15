@@ -1,16 +1,14 @@
 package Logic;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by maxhe on 13-12-2017.
  */
 public class Ship implements Serializable
 {
-    private String name;
-    private int size;
+    private final String name;
+    private final int size;
 
     public Ship(String name, int size){
         this.name = name;

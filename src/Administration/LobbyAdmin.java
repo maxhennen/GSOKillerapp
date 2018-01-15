@@ -17,12 +17,10 @@ import java.util.List;
  */
 public class LobbyAdmin extends UnicastRemoteObject implements IRemotePropertyListener
 {
-    private RMIGameClient client;
-    private User user;
+    private final RMIGameClient client;
 
-    public LobbyAdmin(RMIGameClient client, User user) throws RemoteException{
+    public LobbyAdmin(RMIGameClient client) throws RemoteException{
         this.client = client;
-        this.user = user;
         client.getPublisherLobby().subscribeRemoteListener(this,"lobby");
         client.getPublisherLobby().subscribeRemoteListener(this,"invitation");
     }
@@ -33,7 +31,7 @@ public class LobbyAdmin extends UnicastRemoteObject implements IRemotePropertyLi
      * is synchronized with respect to the remote domain.
      *
      * @param evt PropertyChangeEvent @see java.beans.PropertyChangeEvent
-     * @throws RemoteException
+     * @throws RemoteException if there's a connection error
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) throws RemoteException
@@ -55,11 +53,11 @@ public class LobbyAdmin extends UnicastRemoteObject implements IRemotePropertyLi
         });
     }
 
-    public void invitationsPropertyChange(PropertyChangeEvent evt){
+    private void invitationsPropertyChange(PropertyChangeEvent evt){
         client.setLstInvitations(FXCollections.observableList((List<Invitation>)evt.getNewValue()));
     }
 
-    public void usersPropertyChange(PropertyChangeEvent evt){
+    private void usersPropertyChange(PropertyChangeEvent evt){
         client.setLstPlayers(FXCollections.observableList((List<User>) evt.getNewValue()));
     }
 }

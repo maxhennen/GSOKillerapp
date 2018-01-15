@@ -118,12 +118,15 @@ public class GameRMIServerNormal extends Application{
             registryReference = null;
         }
 
-        // Bind beurs using registry
+        // Bind lobby using registry
         try {
             registryReference.rebind(bindingNameReference, lobby);
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot bind data");
             System.out.println("Server: RemoteException: " + ex.getMessage());
+        }
+        catch (NullPointerException e){
+            System.out.println("Server: NullpointerException: " + e.getMessage());
         }
 
         try

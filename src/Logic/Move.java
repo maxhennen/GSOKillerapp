@@ -9,9 +9,9 @@ import java.io.Serializable;
  */
 public class Move implements Serializable
 {
-    private String tileID;
-    private boolean playerOne;
-    private TileStatus status;
+    private final String tileID;
+    private final boolean playerOne;
+    private final TileStatus status;
 
     public Move(int x, int y, boolean playerOne, TileStatus status){
         this.tileID = x + ";" + y;

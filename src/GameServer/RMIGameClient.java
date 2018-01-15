@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 public class RMIGameClient
 {
-    private User user;
+    private final User user;
     private LobbyAdmin lobbyAdmin;
     private GameAdmin gameAdmin;
     // Create bindingnames
@@ -78,7 +78,7 @@ public class RMIGameClient
         setUpControls();
         createGameClientLobby(ipAddress,portNrLobby);
         createGameClientGame(ipAddress,portNrGame);
-        lobbyAdmin = new LobbyAdmin(this,this.user);
+        lobbyAdmin = new LobbyAdmin(this);
         gameAdmin = new GameAdmin(this);
 
     }
@@ -365,7 +365,7 @@ public class RMIGameClient
 
     }
 
-    public void setTiles(ArrayList<Tile> tiles, String username, boolean playerOne){
+    private void setTiles(ArrayList<Tile> tiles, String username, boolean playerOne){
 
         Platform.runLater(new Runnable()
         {

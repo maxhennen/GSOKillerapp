@@ -2,18 +2,13 @@ package Administration;
 
 import GameServer.RMIGameClient;
 import Logic.Move;
-import Logic.Tile;
-import Logic.User;
 import fontyspublisher.IRemotePropertyListener;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 
-import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by maxhe on 5-1-2018.
@@ -21,7 +16,7 @@ import java.util.HashMap;
 public class GameAdmin extends UnicastRemoteObject implements IRemotePropertyListener
 {
 
-    private RMIGameClient client;
+    private final RMIGameClient client;
 
     public GameAdmin(RMIGameClient client)throws RemoteException{
         this.client = client;
@@ -35,7 +30,7 @@ public class GameAdmin extends UnicastRemoteObject implements IRemotePropertyLis
      * is synchronized with respect to the remote domain.
      *
      * @param evt PropertyChangeEvent @see java.beans.PropertyChangeEvent
-     * @throws RemoteException
+     * @throws RemoteException if there's a connection error
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) throws RemoteException
